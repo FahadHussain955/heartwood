@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hearth furniture storefront
+
+A responsive furniture ecommerce concept built with Next.js App Router, TypeScript, and Tailwind CSS. The storefront at `/` takes visual direction from the supplied Pakistani furniture references while using an original Hearth brand and layout. A lightweight dashboard at `/admin` demonstrates store overview, recent orders, inventory, and adding a demo product.
+
+## Run locally
+
+Install dependencies with `npm install`, then start the development server with `npm run dev`. Open `http://localhost:3000` in a browser. Run `npm run lint` and `npm run build` to check the project.
+
+## Demo limitations
+
+Product listings, orders, sales metrics, and cart actions are sample client-side data only. The admin preview has no authentication and does not persist updates. External Unsplash photography is used as visual placeholder imagery and should be replaced with approved product photography before launch. Configure a secure backend, authentication, inventory, and payment processing before production use.This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
