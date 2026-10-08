@@ -71,7 +71,7 @@ export default async function InvoicePage({ params }: Props) {
             <dt>Invoice #</dt><dd>{invoiceNo(order.id)}</dd>
             <dt>Invoice date</dt><dd>{dateFormat.format(new Date(order.created_at))}</dd>
             <dt>Order #</dt><dd>{orderNo(order.id)}</dd>
-            <dt>Payment</dt><dd>{state === "paid" ? "Paid" : state === "cancelled" ? "Cancelled" : "Cash on delivery"}</dd>
+            <dt>Payment</dt><dd>{state === "paid" ? "Paid" : state === "cancelled" ? "Cancelled" : "Confirm via WhatsApp"}</dd>
           </dl>
         </section>
 
@@ -97,7 +97,7 @@ export default async function InvoicePage({ params }: Props) {
         <div className="invoice-bottom">
           <footer className="invoice-terms">
             <h2>Terms &amp; conditions</h2>
-            <p>{state === "due" ? `Payment of ${money(due)} is due in cash on delivery.` : state === "paid" ? "This invoice has been paid in full. Thank you!" : "This order was cancelled. No payment is due."}</p>
+            <p>{state === "due" ? `Payment of ${money(due)} is pending. Contact us on WhatsApp to confirm payment details.` : state === "paid" ? "This invoice has been paid in full. Thank you!" : "This order was cancelled. No payment is due."}</p>
             <p>No returns or exchanges and no warranty. Delivery and installation charges depend on the order. All prices are in PKR.</p>
           </footer>
 

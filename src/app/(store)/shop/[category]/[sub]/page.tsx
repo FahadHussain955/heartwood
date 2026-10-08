@@ -43,7 +43,7 @@ export default async function SubcategoryPage({ params }: Props) {
           <p className="eyebrow">Why our {sub.name.toLowerCase()}</p>
           <h2>Built for everyday use</h2>
           <ul className="feature-list">{sub.features.map((feature) => <li key={feature}><BadgeCheck size={20} /><div><strong>{feature}</strong></div></li>)}</ul>
-          {sub.madeToOrder && <p className="note">This range is made to order in your chosen size and finish — typical lead time is 2–3 weeks.</p>}
+          {sub.madeToOrder && <p className="note">This range is made to order in your chosen size and finish.</p>}
         </div>
         <div>
           <p className="eyebrow">Typical specifications</p>

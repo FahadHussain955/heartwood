@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: Props) {
               <li><Truck size={18} /> Delivery fee depends on your order</li>
               <li><Wrench size={18} /> Installation charges depend on your order</li>
               <li><ShieldCheck size={18} /> No returns, exchanges or warranty</li>
-              <li><Banknote size={18} /> Cash on delivery, bank transfer or card</li>
+              <li><Banknote size={18} /> Order and arrange payment through WhatsApp</li>
             </ul>
           </div>
         </div>
@@ -65,7 +65,7 @@ export default async function ProductPage({ params }: Props) {
           <table className="spec-table"><tbody>
             <tr><th>Product code</th><td>{product.id.toUpperCase().slice(0, 12)}</td></tr>
             {Object.entries(specs).map(([key, value]) => <tr key={key}><th>{key}</th><td>{value}</td></tr>)}
-            <tr><th>Availability</th><td>{sub.madeToOrder ? "Made to order (2–3 weeks)" : "In stock (3–5 working days)"}</td></tr>
+            <tr><th>Availability</th><td>{sub.madeToOrder ? "Made to order" : "In stock"}</td></tr>
           </tbody></table>
           <details className="accordion" open>
             <summary><Truck size={17} /> Delivery & installation</summary>
@@ -82,11 +82,11 @@ export default async function ProductPage({ params }: Props) {
     <section className="section section-tight" id="reviews">
       <div className="container reviews">
         {product.reviews > 0 ? <>
-        <div className="review-score"><strong>{product.rating}</strong><div className="stars">{Array.from({ length: 5 }, (_, index) => <Star key={index} size={18} fill={index < Math.round(product.rating) ? "currentColor" : "none"} />)}</div><span>Based on {product.reviews} reviews</span></div>
-        <div className="review-bars">{[5, 4, 3, 2, 1].map((stars) => {
-          const share = stars === 5 ? Math.round((product.rating - 4) * 100) : stars === 4 ? Math.round((5 - product.rating) * 80) : stars === 3 ? 4 : 1;
-          return <div key={stars}><span>{stars} ★</span><i><b style={{ width: `${Math.max(0, Math.min(100, share))}%` }} /></i><span>{Math.max(0, Math.min(100, share))}%</span></div>;
-        })}</div>
+          <div className="review-score"><strong>{product.rating}</strong><div className="stars">{Array.from({ length: 5 }, (_, index) => <Star key={index} size={18} fill={index < Math.round(product.rating) ? "currentColor" : "none"} />)}</div><span>Based on {product.reviews} reviews</span></div>
+          <div className="review-bars">{[5, 4, 3, 2, 1].map((stars) => {
+            const share = stars === 5 ? Math.round((product.rating - 4) * 100) : stars === 4 ? Math.round((5 - product.rating) * 80) : stars === 3 ? 4 : 1;
+            return <div key={stars}><span>{stars} ★</span><i><b style={{ width: `${Math.max(0, Math.min(100, share))}%` }} /></i><span>{Math.max(0, Math.min(100, share))}%</span></div>;
+          })}</div>
         </> : <div className="review-score"><strong>New</strong><span>No reviews yet</span></div>}
         {customerReviews.length > 0 && <ul className="review-list">{customerReviews.map((review) => <li key={review.id}>
           <div><strong>{review.reviewer}</strong><span className="stars" aria-label={`${review.rating} out of 5`}>{Array.from({ length: 5 }, (_, index) => <Star key={index} size={14} fill={index < review.rating ? "currentColor" : "none"} />)}</span></div>

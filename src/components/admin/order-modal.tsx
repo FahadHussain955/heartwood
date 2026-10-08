@@ -33,7 +33,7 @@ export function OrderModal({ order, onClose, onStatus }: { order: Order; onClose
           <select className={`order-select status-${order.status}`} value={order.status} onChange={(event) => onStatus(order, event.target.value as OrderStatus)}>
             {statuses.map((value) => <option key={value} value={value}>{label(value)}</option>)}
           </select>
-          <p className="modal-hint">Payment: cash on delivery</p>
+          <p className="modal-hint">Payment: confirm with customer on WhatsApp</p>
         </div>
       </div>
 

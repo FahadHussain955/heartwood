@@ -25,7 +25,7 @@ export function BuyBox({ product, madeToOrder }: { product: Product; madeToOrder
   };
 
   return <div className="buy-box">
-    <p className={madeToOrder ? "stock stock-order" : "stock"}><Check size={16} /> {madeToOrder ? "Made to order — ready in 2–3 weeks" : "In stock — delivered in 3–5 working days"}</p>
+    <p className={madeToOrder ? "stock stock-order" : "stock"}><Check size={16} /> {madeToOrder ? "Made to order" : "In stock"}</p>
     <div className="buy-row">
       <div className="qty qty-lg">
         <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))}><Minus size={15} /></button>
@@ -36,7 +36,7 @@ export function BuyBox({ product, madeToOrder }: { product: Product; madeToOrder
       <button className={liked ? "icon-button wish-lg is-liked" : "icon-button wish-lg"} aria-label={liked ? "Remove from wishlist" : "Save to wishlist"} aria-pressed={liked} onClick={() => toggleWish(product.id)}><Heart size={20} fill={liked ? "currentColor" : "none"} /></button>
     </div>
     <div className="buy-row">
-      <button className="button button-outline" onClick={() => { add(product.id, qty); openDrawer(true); }}>Buy now — Cash on Delivery</button>
+      <button className="button button-outline" onClick={() => { add(product.id, qty); openDrawer(true); }}>Order via WhatsApp</button>
     </div>
   </div>;
 }

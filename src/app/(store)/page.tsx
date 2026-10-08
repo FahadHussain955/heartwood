@@ -5,7 +5,7 @@ import { ProductTabs } from "@/components/product-tabs";
 import { Testimonials } from "@/components/testimonials";
 import { SectionHeading } from "@/components/ui";
 import { getProducts } from "@/lib/products";
-import { getProduct, homeTiles, perks, photo, posts, productHref, productsIn, projects, promos, sectors, site, stats } from "@/lib/store";
+import { getProduct, homeTiles, perks, photo, posts, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
 
 const perkIcons = [Truck, ShieldCheck, Ruler, Banknote];
 
@@ -13,7 +13,7 @@ export default async function Home() {
   const products = await getProducts();
   const featured = getProduct(products, "black-leather-high-back-executive-chair") ?? products[0];
   return <>
-    <HeroSlider />
+    <HeroSlider slides={slides} />
 
     <section className="perks">
       <div className="container perks-inner">{perks.map((perk, index) => {

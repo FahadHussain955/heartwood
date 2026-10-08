@@ -7,10 +7,10 @@ import { faqs } from "@/lib/store";
 export const metadata: Metadata = { title: "Help & FAQs", description: "Delivery, installation, warranty, returns and payment information." };
 
 const topics = [
-  { id: "delivery", icon: Truck, title: "Delivery & installation", points: ["Delivery fee depends on your order.", "Installation charges depend on your order.", "In-stock items are delivered in 3–5 working days; made-to-order items take 2–3 weeks.", "Nationwide delivery through trusted cargo partners — the charges are confirmed before dispatch."] },
+  { id: "delivery", icon: Truck, title: "Delivery & installation", points: ["Delivery fee depends on your order.", "Installation charges depend on your order.", "Nationwide delivery through trusted cargo partners — the charges are confirmed before dispatch."] },
   { id: "warranty", icon: ShieldCheck, title: "Warranty", points: ["No warranty is offered on our products."] },
   { id: "returns", icon: RotateCcw, title: "Returns & exchanges", points: ["No returns or exchanges."] },
-  { id: "payment", icon: Banknote, title: "Payment options", points: ["Cash on delivery for orders within Lahore.", "Bank transfer and debit / credit cards.", "Corporate orders can be invoiced — a 50% advance confirms production.", "All prices are in PKR and include applicable taxes."] },
+  { id: "payment", icon: Banknote, title: "Ordering & payment", points: ["Confirm your order on our website after entering your delivery details.", "You will then continue to WhatsApp, where our team will confirm the final total and payment options.", "Corporate orders can be invoiced — a 50% advance confirms production.", "All prices are in PKR and include applicable taxes."] },
 ];
 
 export default function HelpPage() {

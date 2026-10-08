@@ -8,15 +8,23 @@ export { catalog };
 export const site = {
   name: "Hearth",
   tagline: "Office, home & commercial furniture",
-  phone: "0300 0000000",
-  whatsapp: "923000000000",
+  phone: "0325 8115079",
+  whatsapp: "923258115079",
   email: "hello@hearth.pk",
   hours: "Mon – Sat, 10:00 am – 8:00 pm",
   freeDeliveryFrom: 50000,
-  social: { instagram: "https://instagram.com", facebook: "https://facebook.com", youtube: "https://youtube.com" },
+  social: [
+    { name: "Instagram", url: "https://www.instagram.com/afzal_enterprises_official?stkn=MmNxNjV4aGE5b3dj&utm_source=qr" },
+    { name: "Facebook", url: "https://www.facebook.com/share/1Dhk4QUQM4/?mibextid=wwXIfr" },
+    { name: "TikTok", url: "https://www.tiktok.com/@afzalenterprises3" },
+    { name: "Pinterest", url: "https://pin.it/30NnRyeM9" },
+    { name: "YouTube", url: "https://youtube.com/@afzalenterprises-x1c?si=8jFVo5h9W0Sz6fgE" },
+    { name: "LinkedIn", url: "https://www.linkedin.com/company/afzal-enterprises/" },
+    { name: "Daraz", url: "https://s.daraz.pk/s.XD8YZ" },
+  ],
 };
 
-export const photo = (id: string, width = 900) => id.startsWith("http") ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`;
+export const photo = (id: string, width = 900) => id.startsWith("http") || id.startsWith("/") ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`;
 export const money = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 export const telLink = `tel:${site.phone.replaceAll(" ", "")}`;
 export const whatsappLink = (text = `Hi ${site.name}, I'd like to know more about your furniture.`) => `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`;
@@ -76,16 +84,19 @@ export const navigation: NavGroup[] = [
 /* ---------- Homepage ---------- */
 
 export const slides = [
-  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", image: "1431540015161-0bf868a2d407" },
-  { eyebrow: "Custom workstations", title: "From two desks to two hundred.", text: "Free space planning and custom-sized workstations for startups, banks and corporate floors.", cta: "Explore workstations", href: "/shop/office/workstations", image: "1556761175-4b46a572b786" },
-  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", image: "1554118811-1e0d58224f24" },
+  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.png" },
+  { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.png" },
+  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png" },
+  { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.png" },
 ];
+
+export type HeroSlide = (typeof slides)[number];
 
 export const perks = [
   { title: "Delivery & installation", text: "Charges depend on your order" },
   { title: "Quality-checked", text: "Every piece inspected before dispatch" },
   { title: "Custom manufacturing", text: "Your size, fabric and finish" },
-  { title: "Cash on delivery", text: "Or pay by bank transfer & card" },
+  { title: "Order on WhatsApp", text: "Confirm your order & payment in chat" },
 ];
 
 export const homeTiles = [
@@ -199,15 +210,14 @@ export const posts = [
 ];
 
 export const showrooms = [
-  { name: "Afzal Enterprises", city: "Lahore", address: "Plot 405 Road, near Sharif Medical Complex Road, Jati Umrah, Makhdoom Colony, Lahore, 54000", map: "https://www.google.com/maps/search/?api=1&query=Afzal+Enterprises+Jati+Umrah+Lahore", embed: "https://maps.google.com/maps?q=Afzal%20Enterprises%20Jati%20Umrah%20Lahore&z=15&output=embed", image: "1497366216548-37526070297c" },
+  { name: "Afzal Enterprises", city: "Lahore", address: "Plot 405 Road, near Sharif Medical Complex Road, Jati Umrah, Makhdoom Colony, Lahore, 54000", map: "https://share.google/tooW5IB1mQobuSWr3", embed: "https://maps.google.com/maps?q=Afzal%20Enterprises%20Jati%20Umrah%20Lahore&z=15&output=embed", image: "1497366216548-37526070297c" },
 ];
 
 export const faqs = [
   ["Do you deliver outside Lahore?", "Yes. We deliver nationwide through trusted cargo partners. The delivery fee depends on your order and is shared before dispatch."],
-  ["How long does delivery take?", "In-stock items are delivered in 3–5 working days. Made-to-order items such as workstations, meeting tables and booth seating take 2–3 weeks."],
   ["Is installation included?", "Installation charges depend on your order. Contact us and we'll confirm the cost before dispatch."],
   ["Can I customise size, fabric or colour?", "Most of our range can be customised. Share your requirements on WhatsApp or through the contact form and we'll send a quotation with fabric samples."],
-  ["What payment methods do you accept?", "Cash on delivery, bank transfer and debit / credit cards. Corporate orders can be invoiced with an advance payment."],
+  ["How do I place an order and pay?", "Confirm your order on the website after entering your delivery details, then continue to WhatsApp to confirm your final total and payment options."],
   ["Is there a warranty?", "No, our products do not come with a warranty."],
   ["Can I return or exchange a product?", "No, we do not accept returns or exchanges."],
 ] as const;

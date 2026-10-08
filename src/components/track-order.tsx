@@ -117,7 +117,7 @@ export function TrackOrder() {
         </div>
         : <>
           <ul className="track-items">{order.items.map((item) => <li key={item.id}><span>{item.name} × {item.qty}</span><b>{money(item.price * item.qty)}</b></li>)}</ul>
-          <div className="track-total"><span>Total (cash on delivery)</span><strong>{money(order.subtotal)}</strong></div>
+          <div className="track-total"><span>Order total</span><strong>{money(order.subtotal)}</strong></div>
           {order.address && <p className="track-address"><b>Delivering to:</b> {order.address}</p>}
         </>}
 
