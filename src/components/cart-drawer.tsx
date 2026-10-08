@@ -76,40 +76,40 @@ export function CartDrawer() {
           <button className="button button-outline" onClick={close}>Close</button>
         </div>
         : lines.length === 0
-        ? <div className="cart-empty"><ShoppingBag size={38} strokeWidth={1.4} /><p>Your cart is empty.</p><Link className="button button-dark" href="/shop" onClick={close}>Start shopping</Link></div>
-        : <>
-          <ul className="cart-lines">{lines.map(({ product, qty }) => <li key={product.id}>
-            <Link className="cart-thumb" href={productHref(product)} onClick={close} aria-label={product.name} style={{ backgroundImage: `url("${photo(product.image, 200)}")` }} />
-            <div>
-              <Link href={productHref(product)} onClick={close}><strong>{product.name}</strong></Link>
-              <small>{product.type}</small>
-              <div className="qty">
-                <button aria-label={`Decrease ${product.name}`} onClick={() => setQty(product.id, qty - 1)}><Minus size={13} /></button>
-                <span>{qty}</span>
-                <button aria-label={`Increase ${product.name}`} onClick={() => setQty(product.id, qty + 1)}><Plus size={13} /></button>
+          ? <div className="cart-empty"><ShoppingBag size={38} strokeWidth={1.4} /><p>Your cart is empty.</p><Link className="button button-dark" href="/shop" onClick={close}>Start shopping</Link></div>
+          : <>
+            <ul className="cart-lines">{lines.map(({ product, qty }) => <li key={product.id}>
+              <Link className="cart-thumb" href={productHref(product)} onClick={close} aria-label={product.name} style={{ backgroundImage: `url("${photo(product.image, 200)}")` }} />
+              <div>
+                <Link href={productHref(product)} onClick={close}><strong>{product.name}</strong></Link>
+                <small>{product.type}</small>
+                <div className="qty">
+                  <button aria-label={`Decrease ${product.name}`} onClick={() => setQty(product.id, qty - 1)}><Minus size={13} /></button>
+                  <span>{qty}</span>
+                  <button aria-label={`Increase ${product.name}`} onClick={() => setQty(product.id, qty + 1)}><Plus size={13} /></button>
+                </div>
               </div>
-            </div>
-            <div className="cart-line-end"><b>{money(product.price * qty)}</b><button aria-label={`Remove ${product.name}`} onClick={() => setQty(product.id, 0)}><Trash2 size={15} /></button></div>
-          </li>)}</ul>
-          {checkout
-            ? <form className="cart-summary checkout-form" onSubmit={confirmOrder}>
-              <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
-              <input name="name" required autoComplete="name" placeholder="Full name" aria-label="Full name" />
-              <input name="phone" type="tel" required autoComplete="tel" placeholder="Phone (03XX XXXXXXX)" aria-label="Phone number" />
-              <input name="email" type="email" autoComplete="email" placeholder="Email (optional)" aria-label="Email address" />
-              <textarea name="address" required rows={2} autoComplete="street-address" placeholder="Delivery address & city" aria-label="Delivery address" />
-              {checkoutError && <p className="checkout-error" role="alert">{checkoutError}</p>}
-              <p className="track-note">Your order is confirmed first. You&apos;ll then continue to WhatsApp to arrange payment.</p>
-              <button className="button button-accent" type="submit" disabled={submitting}><MessageCircle size={17} /> {submitting ? "Confirming order…" : "Confirm order & continue"}</button>
-              <button className="button button-outline" type="button" disabled={submitting} onClick={() => setCheckout(false)}>Back to cart</button>
-            </form>
-            : <div className="cart-summary">
-              <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
-              <p>Delivery fee and installation charges depend on your order.</p>
-              <button className="button button-accent" onClick={() => { setCheckoutError(""); setCheckout(true); }}><MessageCircle size={17} /> Checkout</button>
-              <button className="button button-outline" onClick={close}>Continue shopping</button>
-            </div>}
-        </>}
+              <div className="cart-line-end"><b>{money(product.price * qty)}</b><button aria-label={`Remove ${product.name}`} onClick={() => setQty(product.id, 0)}><Trash2 size={15} /></button></div>
+            </li>)}</ul>
+            {checkout
+              ? <form className="cart-summary checkout-form" onSubmit={confirmOrder}>
+                <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
+                <input name="name" required autoComplete="name" placeholder="Full name" aria-label="Full name" />
+                <input name="phone" type="tel" required autoComplete="tel" placeholder="Phone (03XX XXXXXXX)" aria-label="Phone number" />
+                <input name="email" type="email" autoComplete="email" placeholder="Email (optional)" aria-label="Email address" />
+                <textarea name="address" required rows={2} autoComplete="street-address" placeholder="Delivery address & city" aria-label="Delivery address" />
+                {checkoutError && <p className="checkout-error" role="alert">{checkoutError}</p>}
+                <p className="track-note">Your order is confirmed first. You&apos;ll then continue to WhatsApp to arrange payment.</p>
+                <button className="button button-accent" type="submit" disabled={submitting}><MessageCircle size={17} /> {submitting ? "Confirming order…" : "Confirm order & continue"}</button>
+                <button className="button button-outline" type="button" disabled={submitting} onClick={() => setCheckout(false)}>Back to cart</button>
+              </form>
+              : <div className="cart-summary">
+                <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
+                <p>Delivery fee and installation charges depend on your order.</p>
+                <button className="button button-accent" onClick={() => { setCheckoutError(""); setCheckout(true); }}><MessageCircle size={17} /> Checkout</button>
+                <button className="button button-outline" onClick={close}>Continue shopping</button>
+              </div>}
+          </>}
     </aside>
 
     <div className={toast ? "toast is-visible" : "toast"} role="status"><Check size={16} /> <span><b>{toast}</b> added to cart</span><button onClick={() => openDrawer(true)}>View cart</button></div>
