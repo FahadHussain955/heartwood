@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Award, BadgeCheck, Banknote, Building2, Hammer, Quote, Ruler, ShieldCheck, Star, Truck, Wrench } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Award, BadgeCheck, Building2, Hammer, Quote, Star, Wrench } from "lucide-react";
 import { HeroSlider } from "@/components/hero-slider";
 import { ProductTabs } from "@/components/product-tabs";
 import { Testimonials } from "@/components/testimonials";
 import { SectionHeading } from "@/components/ui";
 import { getProducts } from "@/lib/products";
-import { getProduct, homeTiles, perks, photo, posts, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
-
-const perkIcons = [Truck, ShieldCheck, Ruler, Banknote];
+import { getProduct, homeTiles, photo, posts, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
 
 export default async function Home() {
   const products = await getProducts();
@@ -15,11 +13,12 @@ export default async function Home() {
   return <>
     <HeroSlider slides={slides} />
 
-    <section className="perks">
-      <div className="container perks-inner">{perks.map((perk, index) => {
-        const Icon = perkIcons[index];
-        return <div className="perk" key={perk.title}><Icon size={26} strokeWidth={1.6} /><div><strong>{perk.title}</strong><span>{perk.text}</span></div></div>;
-      })}</div>
+    <section className="intro">
+      <div className="container intro-inner">
+        <h2>{site.name}</h2>
+        <p className="intro-lead">Office, home and commercial furniture — designed and made in Pakistan.</p>
+        <p>From executive chairs and workstations to sofas, café seating and classroom desks, every piece is designed in-house, built by our own craftsmen and checked before it leaves the factory. We furnish offices, homes, cafés and schools across the country with furniture that is made to last and made to fit the way you work and live.</p>
+      </div>
     </section>
 
     <section className="section" id="categories">

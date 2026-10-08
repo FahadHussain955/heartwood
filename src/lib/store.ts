@@ -10,7 +10,7 @@ export const site = {
   tagline: "Office, home & commercial furniture",
   phone: "0317 4892190",
   whatsapp: "923174892190",
-  email: "hello@hearth.pk",
+  email: "Khurramch20@gmail.com",
   hours: "Mon – Sat, 10:00 am – 8:00 pm",
   freeDeliveryFrom: 50000,
   social: [
@@ -84,20 +84,13 @@ export const navigation: NavGroup[] = [
 /* ---------- Homepage ---------- */
 
 export const slides = [
-  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.png", ratio: "1024 / 409" },
-  { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.png", ratio: "16 / 9" },
+  { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.jpg", ratio: "16 / 9" },
+  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.jpg", ratio: "16 / 9" },
   { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png", ratio: "16 / 9" },
-  { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.png", ratio: "1024 / 409" },
+  { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.jpg", ratio: "16 / 9" },
 ];
 
 export type HeroSlide = (typeof slides)[number];
-
-export const perks = [
-  { title: "Delivery & installation", text: "Charges depend on your order" },
-  { title: "Quality-checked", text: "Every piece inspected before dispatch" },
-  { title: "Custom manufacturing", text: "Your size, fabric and finish" },
-  { title: "Order on WhatsApp", text: "Confirm your order & payment in chat" },
-];
 
 export const homeTiles = [
   { title: "Executive Chairs", href: "/shop/office/executive-chairs", category: "office", sub: "executive-chairs", image: "1612372606404-0ab33e7187ee" },

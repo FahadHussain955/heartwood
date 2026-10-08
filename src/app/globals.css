@@ -403,8 +403,12 @@ h4 {
   width: 46px;
   height: 46px;
   flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 3px;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--surface-2) center/cover;
+  background: var(--white) center/contain no-repeat;
+  background-origin: content-box;
 }
 
 .header-actions {
@@ -704,8 +708,12 @@ h4 {
   width: 78px;
   height: 78px;
   flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 5px;
+  border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--surface-2) center/cover;
+  background: var(--white) center/contain no-repeat;
+  background-origin: content-box;
 }
 
 .cart-lines li>div:nth-child(2) {
@@ -1187,39 +1195,35 @@ h4 {
 }
 
 
-.perks {
-  border-bottom: 1px solid var(--line);
+/* ---------- Intro ---------- */
+.intro {
+  padding: 72px 0 8px;
 }
 
-.perks-inner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+.intro-inner {
+  max-width: 860px;
+  text-align: center;
 }
 
-.perk {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 26px 20px;
+.intro h2 {
+  margin: 0 0 18px;
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.1;
 }
 
-.perk+.perk {
-  border-left: 1px solid var(--line);
+.intro p {
+  margin: 0 auto;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.75;
 }
 
-.perk svg {
-  flex-shrink: 0;
-  color: var(--accent);
-}
-
-.perk strong {
-  display: block;
-  font-size: 15px;
-}
-
-.perk span {
-  color: var(--muted);
-  font-size: 13px;
+.intro .intro-lead {
+  margin-bottom: 6px;
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* ---------- Categories ---------- */
@@ -1398,19 +1402,16 @@ h4 {
   position: relative;
   aspect-ratio: 1 / 1.08;
   overflow: hidden;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: var(--white);
 }
 
+/* contain, not cover: show the whole product instead of cropping it to fill the frame */
 .product-photo-img {
   position: absolute;
-  inset: 0;
-  background: center/cover;
-  transition: transform .6s;
-}
-
-.product-card:hover .product-photo-img {
-  transform: scale(1.05);
+  inset: 6%;
+  background: center/contain no-repeat;
 }
 
 .product-tags {
@@ -1625,10 +1626,14 @@ h4 {
   border-radius: var(--radius);
 }
 
+.highlight-media {
+  background: var(--white);
+}
+
 .highlight-media>span {
   position: absolute;
-  inset: 0;
-  background: center/cover;
+  inset: 6%;
+  background: center/contain no-repeat;
 }
 
 .highlight-badge {
@@ -2592,18 +2597,6 @@ h4 {
     display: none;
   }
 
-  .perks-inner {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .perk:nth-child(3) {
-    border-left: 0;
-  }
-
-  .perk:nth-child(n + 3) {
-    border-top: 1px solid var(--line);
-  }
-
   .highlight,
   .about,
   .contact {
@@ -2674,25 +2667,17 @@ h4 {
     margin-bottom: 26px;
   }
 
-  .perk {
-    padding: 18px 8px;
-    gap: 10px;
+  .intro {
+    padding: 44px 0 0;
   }
 
-  .perk:nth-child(2n) {
-    padding-left: 14px;
+  .intro h2 {
+    margin-bottom: 14px;
   }
 
-  .perk svg {
-    width: 22px;
-  }
-
-  .perk strong {
-    font-size: 13px;
-  }
-
-  .perk span {
-    font-size: 12px;
+  .intro p {
+    font-size: 15px;
+    line-height: 1.7;
   }
 
   .category-grid,
@@ -2727,6 +2712,11 @@ h4 {
     bottom: 8px;
     height: 38px;
     font-size: 13px;
+  }
+
+  /* the always-visible button covers the bottom 46px, so keep the photo above it */
+  .product-photo-img {
+    inset: 8px 8px 52px;
   }
 
   .wish-button {
@@ -3446,8 +3436,11 @@ h4 {
 
 .gallery-main {
   aspect-ratio: 1 / 1;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-2) center/cover;
+  background: var(--white) center/contain no-repeat;
+  background-origin: content-box;
+  padding: 5%;
 }
 
 .gallery-thumbs {
@@ -3459,9 +3452,11 @@ h4 {
 
 .gallery-thumbs button {
   aspect-ratio: 1 / 1;
-  border: 2px solid transparent;
+  border: 2px solid var(--line);
   border-radius: 10px;
-  background: var(--surface-2) center/cover;
+  background: var(--white) center/contain no-repeat;
+  background-origin: content-box;
+  padding: 6%;
   opacity: .7;
   transition: opacity .2s, border-color .2s;
 }
