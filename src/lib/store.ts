@@ -8,8 +8,8 @@ export { catalog };
 export const site = {
   name: "Hearth",
   tagline: "Office, home & commercial furniture",
-  phone: "0325 8115079",
-  whatsapp: "923258115079",
+  phone: "0317 4892190",
+  whatsapp: "923174892190",
   email: "hello@hearth.pk",
   hours: "Mon – Sat, 10:00 am – 8:00 pm",
   freeDeliveryFrom: 50000,
