@@ -84,10 +84,10 @@ export const navigation: NavGroup[] = [
 /* ---------- Homepage ---------- */
 
 export const slides = [
-  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.png" },
-  { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.png" },
-  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png" },
-  { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.png" },
+  { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.png", ratio: "1024 / 409" },
+  { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.png", ratio: "16 / 9" },
+  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png", ratio: "16 / 9" },
+  { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.png", ratio: "1024 / 409" },
 ];
 
 export type HeroSlide = (typeof slides)[number];

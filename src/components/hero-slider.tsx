@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { photo, type HeroSlide } from "@/lib/store";
 
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
@@ -12,7 +12,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     return () => window.clearTimeout(timer);
   }, [active, slides.length]);
 
-  return <section className="hero" aria-roledescription="carousel" aria-label="Featured furniture collections">
+  return <section className="hero" style={{ "--hero-ratio": slides[active]?.ratio } as CSSProperties} aria-roledescription="carousel" aria-label="Featured furniture collections">
     <h1 className="hero-title">Furniture for office, home and commercial spaces</h1>
     {slides.map((slide, index) => <div className={index === active ? "hero-slide is-active" : "hero-slide"} key={slide.title} aria-hidden={index !== active}>
       <span className="hero-bg" style={{ backgroundImage: `url("${photo(slide.image, 1800)}")` }} />
