@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, Bot, Box, ClipboardList, ChevronDown, FileText, LayoutDashboard, LogOut, MessageSquare, PackagePlus, Search, Settings as SettingsIcon, ShoppingCart, Store, Users } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { createClient } from "@/lib/supabase/client";
-import { money, photo } from "@/lib/store";
+import { money, photo, site } from "@/lib/store";
 import { Customers } from "./customers";
 import { Invoices } from "./invoices";
 import { OrderModal } from "./order-modal";
@@ -157,7 +158,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <span className="wordmark admin-wordmark">hearth<span>.</span></span>
+        <span className="wordmark admin-wordmark"><Logo height={56} /></span>
         <p className="admin-shop-label">STORE MANAGEMENT</p>
         <nav className="admin-nav">
           {nav.map(({ label, icon: Icon }) => <button key={label} className={tab === label ? "admin-nav-link selected" : "admin-nav-link"} onClick={() => goTo(label)}>
@@ -168,7 +169,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
 
       <section className="admin-content">
         <header className="admin-topbar">
-          <div className="breadcrumbs">Hearth Store <span>/</span> {tab}</div>
+          <div className="breadcrumbs">{site.name} <span>/</span> {tab}</div>
           <div className="admin-top-actions">
             <div className="admin-search" ref={searchRef}>
               <Search size={16} />
@@ -233,7 +234,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
           {tab === "Reviews" && <Reviews reviews={reviews} products={products} loading={loading.reviews} onChanged={() => { setReviewsVersion((value) => value + 1); reloadProducts(); }} onNotice={flash} />}
           {tab === "Settings" && <Settings admin={admin} onRenamed={(name) => { setAdmin((current) => ({ ...current, name })); router.refresh(); }} onNotice={flash} />}
 
-          <footer className="admin-footer">© {new Date().getFullYear()} Hearth Living <span>Signed in as {admin.email}</span></footer>
+          <footer className="admin-footer">© {new Date().getFullYear()} {site.name} <span>Signed in as {admin.email}</span></footer>
         </div>
       </section>
 

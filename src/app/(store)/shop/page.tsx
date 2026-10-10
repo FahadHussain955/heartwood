@@ -13,7 +13,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const query = (Array.isArray(q) ? q[0] : q) ?? "";
 
   return <>
-    <PageHero crumbs={[{ label: "Shop" }]} eyebrow={`${products.length} products`} title={query ? `Search: “${query}”` : "Shop all furniture"} text="Office, commercial and home furniture — built in Pakistan, delivered and installed nationwide." />
+    <PageHero crumbs={[{ label: "Shop" }]} eyebrow={`${products.length} products`} title={query ? `Search: “${query}”` : "Shop all furniture"} text="Office, commercial and home furniture — built in Pakistan, delivered and installed nationwide." image="/banners/shop.jpg" />
     <section className="section section-tight">
       <div className="container">
         <div className="chip-row">{catalog.map((category) => <Link key={category.slug} className="chip chip-img" href={`/shop/${category.slug}`}><span style={{ backgroundImage: `url("${photo(category.image, 120)}")` }} />{category.name}</Link>)}</div>

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { site } from "./store";
 
 type Line = { name: string; price: number; qty: number };
 type Order = { id: number; name: string; phone: string; email?: string; address: string; lines: Line[]; total: number };
@@ -29,13 +30,13 @@ export async function sendOrderEmails(order: Order) {
   if (!t) return console.warn("Order emails skipped: SMTP_USER / SMTP_PASS not set");
   const { transporter, sender } = t;
   const adminTo = process.env.ADMIN_NOTIFY_EMAIL || sender;
-  const from = `"Hearth & Wood" <${sender}>`;
+  const from = `"${site.name}" <${sender}>`;
   const ref = `#HW-${order.id}`;
   const details = `<p><b>Name:</b> ${esc(order.name)}<br><b>Phone:</b> ${esc(order.phone)}<br><b>Email:</b> ${esc(order.email || "—")}<br><b>Address:</b> ${esc(order.address)}</p>`;
 
   const messages = [];
   if (order.email) messages.push(transporter.sendMail({
-    from, to: order.email, replyTo: adminTo, subject: `Your Hearth & Wood order ${ref}`,
+    from, to: order.email, replyTo: adminTo, subject: `Your ${site.name} order ${ref}`,
     text: `Thank you, ${order.name}!\n\nWe've received your order ${ref}. Our team will contact you on WhatsApp to confirm payment options and delivery.\n\n${order.lines.map((l) => `${l.name} x ${l.qty} - ${rs(l.price * l.qty)}`).join("\n")}\n\nOrder total: ${rs(order.total)}\n\nDelivery address: ${order.address}\nPhone: ${order.phone}`,
     html: `<div style="font-family:Arial,sans-serif;max-width:560px"><h2>Thank you, ${esc(order.name)}!</h2><p>We've received your order <b>${ref}</b>. Our team will contact you on WhatsApp to confirm payment options and delivery.</p>${table(order)}${details}</div>`,
   }));
@@ -56,7 +57,7 @@ export async function sendEnquiryEmail(q: Enquiry) {
   const to = process.env.ADMIN_NOTIFY_EMAIL || t.sender;
   try {
     await t.transporter.sendMail({
-      from: `"Hearth & Wood" <${t.sender}>`, to, ...(q.email && { replyTo: q.email }), subject: `New enquiry from ${q.name} — ${q.type}`,
+      from: `"${site.name}" <${t.sender}>`, to, ...(q.email && { replyTo: q.email }), subject: `New enquiry from ${q.name} — ${q.type}`,
       html: `<div style="font-family:Arial,sans-serif;max-width:560px"><h2>New website enquiry</h2><p><b>Name:</b> ${esc(q.name)}<br><b>Phone:</b> ${esc(q.phone)}<br><b>Email:</b> ${esc(q.email) || "—"}<br><b>Interested in:</b> ${esc(q.type)}</p><p style="white-space:pre-wrap">${esc(q.message)}</p></div>`,
     });
     return true;

@@ -51,7 +51,7 @@ export default async function InvoicePage({ params }: Props) {
       <div className="invoice-content">
         <header className="invoice-header">
           <h1>Invoice</h1>
-          <p><strong>{site.name} Furniture</strong></p>
+          <p><strong>{site.name}</strong></p>
           <p>{showrooms[0].address}</p>
           <p>{site.phone} · {site.email}</p>
         </header>

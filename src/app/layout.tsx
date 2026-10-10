@@ -6,7 +6,7 @@ import "./globals.css";
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
-  title: { default: "Hearth Furniture — Office, Home & Commercial Furniture in Pakistan", template: "%s | Hearth Furniture" },
+  title: { default: "Afzal Enterprises — Office, Home & Commercial Furniture in Pakistan", template: "%s | Afzal Enterprises" },
   description: "Shop executive chairs, office tables, workstations, café and home furniture online. Delivery and installation available.",
 };
 

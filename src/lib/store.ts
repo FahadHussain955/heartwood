@@ -6,7 +6,7 @@ import { catalog } from "./catalog-data";
 export { catalog };
 
 export const site = {
-  name: "Hearth",
+  name: "Afzal Enterprises",
   tagline: "Office, home & commercial furniture",
   phone: "0317 4892190",
   whatsapp: "923174892190",
@@ -24,7 +24,11 @@ export const site = {
   ],
 };
 
-export const photo = (id: string, width = 900) => id.startsWith("http") || id.startsWith("/") ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`;
+export const photo = (id: string, width = 900) => {
+  // Banners have 320px copies in public/banners/thumbs for small thumbnails.
+  if (id.startsWith("/banners/") && width <= 500) return id.replace("/banners/", "/banners/thumbs/");
+  return id.startsWith("http") || id.startsWith("/") ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`;
+};
 export const money = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 export const telLink = `tel:${site.phone.replaceAll(" ", "")}`;
 export const whatsappLink = (text = `Hi ${site.name}, I'd like to know more about your furniture.`) => `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`;
@@ -119,7 +123,7 @@ export const stats = [
 export const sectors = ["Corporate offices", "Banks & finance", "Schools & universities", "Hospitals & clinics", "Cafés & restaurants", "Co-working spaces"];
 
 export const testimonials = [
-  { quote: "We furnished our whole floor through Hearth — desks, chairs and the boardroom. Delivery and installation happened over a weekend, with zero disruption on Monday.", name: "Hamza R.", role: "Operations lead, Lahore", date: "Aug 27, 2026" },
+  { quote: "We furnished our whole floor through Afzal Enterprises — desks, chairs and the boardroom. Delivery and installation happened over a weekend, with zero disruption on Monday.", name: "Hamza R.", role: "Operations lead, Lahore", date: "Aug 27, 2026" },
   { quote: "The executive chair is genuinely comfortable for ten-hour days. The team helped me pick the right height and the price beat the market.", name: "Mariam S.", role: "Software engineer, Lahore", date: "Aug 24, 2026" },
   { quote: "Our café chairs have survived two years of full houses and still look new. Custom colours matched our branding perfectly.", name: "Usman A.", role: "Café owner, Lahore", date: "Aug 17, 2026" },
   { quote: "Great finish on the dining set and the delivery team was careful and on time.", name: "Sana K.", role: "Homeowner, Lahore", date: "Aug 9, 2026" },

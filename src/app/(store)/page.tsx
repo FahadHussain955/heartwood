@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Award, BadgeCheck, Building2, Hammer, Quote, Star, Wrench } from "lucide-react";
 import { HeroSlider } from "@/components/hero-slider";
+import { OfficeCarousel } from "@/components/office-carousel";
 import { ProductTabs } from "@/components/product-tabs";
 import { Testimonials } from "@/components/testimonials";
 import { SectionHeading } from "@/components/ui";
@@ -32,6 +33,12 @@ export default async function Home() {
       </div>
     </section>
 
+    <section className="section section-tight" id="office">
+      <div className="container">
+        <SectionHeading eyebrow="Office collection" title="Furniture for the workplace" text="Tables, workstations, reception counters and office chairs — built for daily commercial use." />
+        <OfficeCarousel />
+      </div>
+    </section>
 
     <section className="section promos-section">
       <div className="container promo-grid">{promos.map((promo) => <Link className="promo-card" href={promo.href} key={promo.title}>
@@ -70,7 +77,7 @@ export default async function Home() {
           <p className="eyebrow">A message from our founder</p>
           <Quote size={36} className="about-quote" />
           <blockquote>We started {site.name} with one workshop and a simple belief — that good furniture changes how people work and live. Every piece we make is designed in-house, built by our own craftsmen and checked before it leaves the factory.</blockquote>
-          <p className="about-sign">Founder & CEO, {site.name} Furniture</p>
+          <p className="about-sign">Founder & CEO, {site.name}</p>
           <div className="about-points"><span><Hammer size={17} /> In-house manufacturing</span><span><Award size={17} /> Quality-checked</span><span><Wrench size={17} /> Installation available</span></div>
           <Link className="text-link light-link" href="/about">Read our story <ArrowRight size={16} /></Link>
         </div>

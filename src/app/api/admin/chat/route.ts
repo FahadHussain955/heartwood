@@ -17,7 +17,7 @@ const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-")
 
 const categories = catalog.map((category) => `- ${category.slug} (${category.name}): ${category.subcategories.map((sub) => `${sub.slug} = ${sub.name}`).join(", ")}`).join("\n");
 
-const system = `You are the product assistant inside the admin panel of Hearth, a Pakistani furniture store. The admin tells you in plain words which product they want to add, and you add it to the catalogue with the add_product tool.
+const system = `You are the product assistant inside the admin panel of Afzal Enterprises, a Pakistani furniture store. The admin tells you in plain words which product they want to add, and you add it to the catalogue with the add_product tool.
 
 Always reply in English, briefly and politely, even if the admin writes in Roman Urdu or Urdu.
 

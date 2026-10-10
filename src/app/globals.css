@@ -10,7 +10,7 @@
   --white: #fff;
   --accent: #806300;
   --accent-dark: #604a00;
-  --accent-bright: #f5c400;
+  --accent-bright: #fef200;
   --sale: #d23f2b;
   --green: #2f7a4c;
   --radius: 14px;
@@ -29,7 +29,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 130px;
+  scroll-padding-top: 160px;
 }
 
 body {
@@ -248,10 +248,11 @@ h4 {
   align-items: center;
   gap: 7px;
   margin: 0;
+  white-space: nowrap;
 }
 
 .topbar p svg {
-  color: var(--white);
+  color: var(--ink);
 }
 
 .topbar-contact,
@@ -261,9 +262,46 @@ h4 {
 }
 
 .topbar a:hover {
-  color: var(--white);
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.topbar-contact,
+.topbar-links {
+  align-items: center;
+}
+
+.topbar-links {
+  gap: 14px;
+}
+
+.topbar-track {
+  padding-left: 14px;
+  border-left: 1px solid rgba(23, 23, 23, .25);
+  font-weight: 600;
+}
+
+.topbar-socials {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.topbar .topbar-socials a {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background .2s, color .2s;
+}
+
+.topbar .topbar-socials a:hover {
+  background: var(--ink);
+  color: var(--accent-bright);
+  text-decoration: none;
 }
 
 .site-header {
@@ -275,16 +313,37 @@ h4 {
   border-bottom: 1px solid var(--line);
 }
 
+/* Desktop: the logo row scrolls away and only the tabs row stays pinned.
+   -84px matches the logo row height. */
+@media (min-width: 1181px) {
+  html {
+    scroll-padding-top: 80px;
+  }
+
+  .site-header {
+    top: -84px;
+  }
+}
+
+/* left tools | centred logo | right actions — equal side columns keep the logo truly centred */
 .header-inner {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  height: 84px;
+}
+
+.header-left {
   display: flex;
   align-items: center;
-  gap: 24px;
-  height: 78px;
+  gap: 4px;
+  justify-self: start;
 }
 
 .header-inner>.wordmark {
-  flex: none;
+  justify-self: center;
 }
 
 .wordmark {
@@ -307,6 +366,24 @@ h4 {
   font-weight: 600;
   letter-spacing: .2em;
   text-transform: uppercase;
+}
+
+.wordmark .logo-img {
+  display: block;
+  width: auto;
+}
+
+.site-footer .footer-logo {
+  max-width: 100%;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--white);
+}
+
+.site-footer .footer-logo .logo-img {
+  max-width: 100%;
+  height: auto;
 }
 
 .header-search {
@@ -413,9 +490,9 @@ h4 {
 
 .header-actions {
   display: flex;
-  flex: none;
   align-items: center;
   gap: 4px;
+  justify-self: end;
 }
 
 .mobile-only {
@@ -423,15 +500,14 @@ h4 {
 }
 
 .main-nav {
-  flex: 1;
-  min-width: 0;
+  border-top: 0;
 }
 
 .main-nav-inner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 6px;
 }
 
 .nav-item {
@@ -442,8 +518,8 @@ h4 {
   display: flex;
   align-items: center;
   gap: 4px;
-  height: 78px;
-  padding: 0 11px;
+  height: 50px;
+  padding: 0 12px;
   white-space: nowrap;
   font-size: 14px;
   font-weight: 600;
@@ -504,7 +580,7 @@ h4 {
 }
 
 .mega-menu a:hover {
-  color: var(--accent);
+  color: var(--accent-bright);
   padding-left: 4px;
 }
 
@@ -1393,6 +1469,100 @@ h4 {
   gap: 24px 18px;
 }
 
+/* ---------- Product carousel ---------- */
+.carousel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: -8px 0 28px;
+}
+
+.carousel-bar .tabs {
+  margin: 0;
+  min-width: 0;
+}
+
+.carousel-arrows {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.carousel-arrows button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s, opacity .2s;
+}
+
+.carousel-arrows button:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+
+.carousel-arrows button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.carousel-track {
+  --carousel-gap: 18px;
+  --carousel-visible: 4;
+  display: grid;
+  grid-auto-columns: calc((100% - (var(--carousel-visible) - 1) * var(--carousel-gap)) / var(--carousel-visible));
+  grid-auto-flow: column;
+  gap: var(--carousel-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-track>* {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 1100px) {
+  .carousel-track {
+    --carousel-visible: 3;
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-arrows {
+    display: none;
+  }
+
+  .carousel-bar .tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .carousel-bar .tabs button {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  /* 2 cards plus a peek of the next one, so it reads as swipeable */
+  .carousel-track {
+    --carousel-gap: 12px;
+    --carousel-visible: 2.2;
+  }
+}
+
 .product-card {
   display: flex;
   flex-direction: column;
@@ -2098,8 +2268,8 @@ h4 {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-bright), var(--accent-dark));
-  color: var(--white);
+  background: var(--accent-bright);
+  color: var(--ink);
   font-weight: 800;
 }
 
@@ -2509,24 +2679,11 @@ h4 {
   .mobile-only {
     display: grid;
   }
-
-  .header-inner>.wordmark {
-    margin-right: auto;
-  }
 }
 
 @media (max-width: 1100px) {
-  .topbar-links {
+  .topbar p {
     display: none;
-  }
-
-  .nav-link {
-    padding: 0 7px;
-    font-size: 13px;
-  }
-
-  .header-inner {
-    gap: 14px;
   }
 
   .product-grid,
@@ -2568,15 +2725,10 @@ h4 {
   }
 
   .header-inner {
-    flex-wrap: wrap;
-    gap: 8px 12px;
+    gap: 10px 12px;
     height: auto;
     padding-top: 10px;
     padding-bottom: 12px;
-  }
-
-  .wordmark {
-    margin-right: auto;
   }
 
   .header-search {
@@ -2584,9 +2736,8 @@ h4 {
     top: auto;
     left: auto;
     right: auto;
-    order: 3;
+    grid-column: 1 / -1;
     display: flex;
-    flex-basis: 100%;
     height: 44px;
     margin: 0;
     background: var(--surface);
@@ -2643,13 +2794,18 @@ h4 {
     padding: 52px 0;
   }
 
-  .topbar-contact {
-    width: 100%;
-    justify-content: center;
+  .topbar-contact>a:last-child,
+  .topbar .topbar-track {
+    display: none;
   }
 
-  .topbar-contact a:last-child {
-    display: none;
+  .topbar-socials {
+    gap: 0;
+  }
+
+  .topbar .topbar-socials a {
+    width: 24px;
+    height: 24px;
   }
 
   .wordmark {
@@ -2658,6 +2814,10 @@ h4 {
 
   .wordmark small {
     display: none;
+  }
+
+  .header-inner .logo-img {
+    height: 42px;
   }
 
   .section-heading,
@@ -2889,7 +3049,7 @@ h4 {
   border-top: 1px solid var(--line);
   font-size: 13px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-bright);
 }
 
 .search-all {
@@ -2975,15 +3135,20 @@ h4 {
 }
 
 .page-hero.has-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: clamp(340px, 34vw, 500px);
   padding: 44px 0 72px;
   color: var(--white);
   background: var(--ink);
 }
 
+/* Banners keep the furniture centre-right and low, with empty wall on the left for the text. */
 .page-hero-bg {
   position: absolute;
   inset: 0;
-  background: center/cover;
+  background: 70% 62% / cover no-repeat;
 }
 
 .page-hero-bg::after {
@@ -3090,7 +3255,7 @@ h4 {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--surface-2) center/cover;
+  background: var(--surface-2) 68% 62% / cover;
 }
 
 .has-image .chip:not(.is-active) {
@@ -3270,7 +3435,7 @@ h4 {
   height: 64px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: var(--surface-2) center/cover;
+  background: var(--surface-2) 68% 62% / cover;
 }
 
 .sub-card div {
@@ -4135,7 +4300,7 @@ h4 {
   padding: 30px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  scroll-margin-top: 150px;
+  scroll-margin-top: 170px;
 }
 
 .help-card svg {

@@ -4,7 +4,7 @@ import { ArrowRight, Award, Hammer, HeartHandshake, Leaf, Quote, Ruler, Wrench }
 import { CtaBand, PageHero, SectionHeading } from "@/components/ui";
 import { photo, sectors, site, stats } from "@/lib/store";
 
-export const metadata: Metadata = { title: "About us", description: `The story behind ${site.name} Furniture — designed and built in Pakistan.` };
+export const metadata: Metadata = { title: "About us", description: `The story behind ${site.name} — furniture designed and built in Pakistan.` };
 
 const values = [
   { icon: Hammer, title: "Made in-house", text: "Our own factory and craftsmen, so we control quality from raw timber to final finish." },
@@ -38,7 +38,7 @@ export default function AboutPage() {
           <p className="eyebrow">A message from our founder</p>
           <Quote size={36} className="about-quote" />
           <blockquote>Every piece we make is designed in-house, built by our own craftsmen and checked before it leaves the factory. When you buy from us, you are buying from the people who made it.</blockquote>
-          <p className="about-sign">Founder & CEO, {site.name} Furniture</p>
+          <p className="about-sign">Founder & CEO, {site.name}</p>
         </div>
         <div className="stats">{stats.map((stat) => <div key={stat.label}><strong>{stat.value}</strong><span>{stat.label}</span></div>)}</div>
       </div>

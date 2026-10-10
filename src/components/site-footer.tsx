@@ -1,35 +1,14 @@
 import Link from "next/link";
-import { ArrowUpRight, MapPin, ShoppingBag } from "lucide-react";
-import { FaLinkedinIn } from "react-icons/fa";
-import { SiFacebook, SiInstagram, SiPinterest, SiTiktok, SiYoutube } from "react-icons/si";
-import type { IconType } from "react-icons";
+import { ArrowUpRight, MapPin } from "lucide-react";
+import { Logo } from "@/components/logo";
+import { socialColors, socialIcons } from "@/components/social-icons";
 import { catalog, showrooms, site, telLink } from "@/lib/store";
-
-const socialIcons: Record<string, IconType> = {
-  Instagram: SiInstagram,
-  Facebook: SiFacebook,
-  TikTok: SiTiktok,
-  Pinterest: SiPinterest,
-  YouTube: SiYoutube,
-  LinkedIn: FaLinkedinIn,
-  Daraz: ShoppingBag,
-};
-
-const socialColors: Record<string, string> = {
-  Instagram: "#E4405F",
-  Facebook: "#1877F2",
-  TikTok: "#25F4EE",
-  Pinterest: "#E60023",
-  YouTube: "#FF0000",
-  LinkedIn: "#0A66C2",
-  Daraz: "#F85606",
-};
 
 export function SiteFooter() {
   return <footer className="site-footer">
     <div className="container footer-main">
       <div className="footer-brand">
-        <Link className="wordmark" href="/">{site.name.toLowerCase()}<span>.</span><small>furniture</small></Link>
+        <Link className="wordmark footer-logo" href="/" aria-label="Afzal Enterprises home"><Logo variant="footer" height={118} /></Link>
         <p>Office, commercial and home furniture — designed and built in Pakistan, made to last.</p>
         <nav className="footer-socials" aria-label="Follow Afzal Enterprises">
           {site.social.map((social) => {
@@ -54,6 +33,6 @@ export function SiteFooter() {
         <iframe title={`${room.name} location on Google Maps`} src={room.embed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
       </div>)}
     </section>
-    <div className="container footer-bottom"><span>© {new Date().getFullYear()} {site.name} Furniture. All rights reserved.</span></div>
+    <div className="container footer-bottom"><span>© {new Date().getFullYear()} {site.name}. All rights reserved.</span></div>
   </footer>;
 }
