@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { photo, type HeroSlide } from "@/lib/store";
 
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
@@ -16,6 +18,12 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     <h1 className="hero-title">Furniture for office, home and commercial spaces</h1>
     {slides.map((slide, index) => <div className={index === active ? "hero-slide is-active" : "hero-slide"} key={slide.title} aria-hidden={index !== active}>
       <span className="hero-bg" style={{ backgroundImage: `url("${photo(slide.image, 1800)}")` }} />
+      <div className="container hero-copy">
+        <p className="eyebrow">{slide.eyebrow}</p>
+        <h2>{slide.title}</h2>
+        <p>{slide.text}</p>
+        <Link className="button button-accent" href={slide.href} tabIndex={index === active ? 0 : -1}>{slide.cta} <ArrowRight size={16} /></Link>
+      </div>
     </div>)}
     <div className="hero-dots" aria-label="Choose a slide">
       {slides.map((slide, index) => <button key={slide.title} type="button" className={index === active ? "hero-dot is-active" : "hero-dot"} onClick={() => setActive(index)} aria-label={`Show slide ${index + 1}: ${slide.eyebrow}`} aria-current={index === active ? "true" : undefined} />)}

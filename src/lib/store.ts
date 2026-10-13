@@ -90,6 +90,7 @@ export const navigation: NavGroup[] = [
 export const slides = [
   { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.jpg", ratio: "16 / 9" },
   { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.jpg", ratio: "16 / 9" },
+  { eyebrow: "Open-plan workstations", title: "A floor built for the whole team.", text: "Shared desks, task chairs and storage, laid out for busy offices.", cta: "Shop workstations", href: "/shop/office/workstations", category: "office", image: "/hero/workstations.png", ratio: "16 / 9" },
   { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png", ratio: "16 / 9" },
   { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.jpg", ratio: "16 / 9" },
 ];

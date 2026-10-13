@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Eye, Heart, ShoppingBag, Star } from "lucide-react";
 import { useCart } from "@/components/cart";
+import { QuickView } from "@/components/quick-view";
 import { money, photo, productHref, type Product } from "@/lib/store";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add, wishlist, toggleWish } = useCart();
+  const [quickView, setQuickView] = useState(false);
   const liked = wishlist.includes(product.id);
   const href = productHref(product);
 
@@ -17,8 +20,10 @@ export function ProductCard({ product }: { product: Product }) {
         {product.tag && <span className="tag">{product.tag}</span>}
       </div>
       <button className={liked ? "wish-button is-liked" : "wish-button"} aria-label={liked ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`} aria-pressed={liked} onClick={() => toggleWish(product.id)}><Heart size={17} fill={liked ? "currentColor" : "none"} /></button>
+      <button className="quick-view-button" type="button" aria-label={`Quick view ${product.name}`} onClick={() => setQuickView(true)}><Eye size={30} strokeWidth={2.25} /></button>
       <button className="add-button" onClick={() => add(product.id)}><ShoppingBag size={16} /> Add to cart</button>
     </div>
+    {quickView && <QuickView product={product} onClose={() => setQuickView(false)} />}
     <div className="product-info">
       <p className="product-type">{product.type}</p>
       <h3><Link href={href}>{product.name}</Link></h3>
