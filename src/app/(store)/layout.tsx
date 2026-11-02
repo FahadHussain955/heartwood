@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CartProvider } from "@/components/cart";
+import { AuthModal } from "@/components/auth-modal";
 import { CartDrawer } from "@/components/cart-drawer";
 import { ProductsProvider } from "@/components/products-provider";
 import { SiteFooter } from "@/components/site-footer";
@@ -17,6 +18,7 @@ export default async function StoreLayout({ children }: Readonly<{ children: Rea
       <main>{children}</main>
       <SiteFooter />
       <CartDrawer />
+      <AuthModal />
     </CartProvider>
   </ProductsProvider>;
 }

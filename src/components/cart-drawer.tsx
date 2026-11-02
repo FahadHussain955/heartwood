@@ -7,12 +7,14 @@ import { useCart } from "@/components/cart";
 import { money, photo, productHref, site, whatsappLink } from "@/lib/store";
 
 export function CartDrawer() {
-  const { lines, count, subtotal, drawerOpen, toast, setQty, openDrawer, clear } = useCart();
+  const { lines, count, subtotal, drawerOpen, toast, user, setQty, openDrawer, clear, requireLogin, signOut } = useCart();
   const [checkout, setCheckout] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [orderRef, setOrderRef] = useState("");
   const [paymentUrl, setPaymentUrl] = useState("");
+  const startCheckout = () => requireLogin(() => { setCheckoutError(""); setCheckout(true); });
+  const handleSignOut = async () => { await signOut(); setCheckout(false); };
   const close = () => { openDrawer(false); setCheckout(false); setCheckoutError(""); setOrderRef(""); setPaymentUrl(""); };
 
   const confirmOrder = async (event: FormEvent<HTMLFormElement>) => {
@@ -73,6 +75,7 @@ export function CartDrawer() {
           <h3>Order confirmed</h3>
           <p>Your order <strong>{orderRef}</strong> has been placed. Continue to WhatsApp to confirm payment details.</p>
           <a className="button button-accent" href={paymentUrl} target="_blank" rel="noreferrer"><MessageCircle size={17} /> Continue to WhatsApp</a>
+          <Link className="button button-outline" href="/track-order" onClick={close}>Track order</Link>
           <button className="button button-outline" onClick={close}>Close</button>
         </div>
         : lines.length === 0
@@ -94,9 +97,10 @@ export function CartDrawer() {
             {checkout
               ? <form className="cart-summary checkout-form" onSubmit={confirmOrder}>
                 <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
-                <input name="name" required autoComplete="name" placeholder="Full name" aria-label="Full name" />
-                <input name="phone" type="tel" required autoComplete="tel" placeholder="Phone (03XX XXXXXXX)" aria-label="Phone number" />
-                <input name="email" type="email" autoComplete="email" placeholder="Email (optional)" aria-label="Email address" />
+                <p className="track-note">Signed in as {user?.email} · <button type="button" onClick={handleSignOut}>Sign out</button></p>
+                <input name="name" required autoComplete="name" defaultValue={String(user?.user_metadata?.name ?? "")} placeholder="Full name" aria-label="Full name" />
+                <input name="phone" type="tel" required autoComplete="tel" defaultValue={String(user?.user_metadata?.phone ?? "")} placeholder="Phone (03XX XXXXXXX)" aria-label="Phone number" />
+                <input name="email" type="email" autoComplete="email" defaultValue={user?.email ?? ""} placeholder="Email (optional)" aria-label="Email address" />
                 <textarea name="address" required rows={2} autoComplete="street-address" placeholder="Delivery address & city" aria-label="Delivery address" />
                 {checkoutError && <p className="checkout-error" role="alert">{checkoutError}</p>}
                 <p className="track-note">Your order is confirmed first. You&apos;ll then continue to WhatsApp to arrange payment.</p>
@@ -106,7 +110,7 @@ export function CartDrawer() {
               : <div className="cart-summary">
                 <div><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
                 <p>Delivery fee and installation charges depend on your order.</p>
-                <button className="button button-accent" onClick={() => { setCheckoutError(""); setCheckout(true); }}><MessageCircle size={17} /> Checkout</button>
+                <button className="button button-accent" onClick={startCheckout}><MessageCircle size={17} /> Checkout</button>
                 <button className="button button-outline" onClick={close}>Continue shopping</button>
               </div>}
           </>}

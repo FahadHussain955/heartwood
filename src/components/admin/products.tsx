@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { catalog, money, photo } from "@/lib/store";
 import { LOW_STOCK, includes, type DbProduct, type StockView } from "./shared";
 
-const blank = { name: "", type: "", category: catalog[0].slug, sub: catalog[0].subcategories[0].slug, price: "", stock: "0", sku: "", tag: "" };
+const blank = { name: "", type: "", category: catalog[0].slug, sub: catalog[0].subcategories[0].slug, price: "", stock: "0", sku: "", tag: "", featured: false };
 const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const dropImage = (publicId: string | null) => publicId && fetch(`/api/upload?publicId=${encodeURIComponent(publicId)}`, { method: "DELETE" });
 const categoryName = (slug: string) => catalog.find((category) => category.slug === slug)?.short ?? slug;
@@ -69,13 +69,13 @@ type EditorProps = { product: DbProduct | "new"; onClose: () => void; onSaved: (
 export function ProductEditor({ product, onClose, onSaved }: EditorProps) {
   const [form, setForm] = useState(() => product === "new" ? blank : {
     name: product.name, type: product.type, category: product.category, sub: product.sub, price: String(product.price),
-    stock: String(product.stock), sku: product.sku ?? "", tag: product.tag ?? "",
+    stock: String(product.stock), sku: product.sku ?? "", tag: product.tag ?? "", featured: !!product.featured,
   });
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const set = (key: keyof typeof blank, value: string) => setForm((current) => ({ ...current, [key]: value }));
+  const set = (key: keyof typeof blank, value: string | boolean) => setForm((current) => ({ ...current, [key]: value }));
   const subs = catalog.find((category) => category.slug === form.category)?.subcategories ?? [];
 
   const save = async (event: FormEvent) => {
@@ -95,13 +95,16 @@ export function ProductEditor({ product, onClose, onSaved }: EditorProps) {
       const row = {
         name: form.name.trim(), type: form.type.trim(), category: form.category, sub: form.sub,
         price: Number(form.price),
-        stock: Number(form.stock) || 0, sku: form.sku.trim() || null, tag: form.tag.trim() || null, ...image,
+        stock: Number(form.stock) || 0, sku: form.sku.trim() || null, tag: form.tag.trim() || null, featured: form.featured, ...image,
       };
       const supabase = createClient();
+      const id = product === "new" ? `${slugify(row.name)}-${Math.random().toString(36).slice(2, 6)}` : product.id;
       const { error } = product === "new"
-        ? await supabase.from("products").insert({ id: `${slugify(row.name)}-${Math.random().toString(36).slice(2, 6)}`, ...row })
-        : await supabase.from("products").update(row).eq("id", product.id);
+        ? await supabase.from("products").insert({ id, ...row })
+        : await supabase.from("products").update(row).eq("id", id);
       if (error) throw new Error(error.message);
+      // only one product is featured on the homepage at a time
+      if (form.featured) await supabase.from("products").update({ featured: false }).neq("id", id);
       if (file && product !== "new") dropImage(product.image_public_id);
       onSaved(product === "new" ? "Product added." : "Product updated.");
     } catch (caught) {
@@ -125,6 +128,7 @@ export function ProductEditor({ product, onClose, onSaved }: EditorProps) {
         <label>Stock<input type="number" min="0" value={form.stock} onChange={(event) => set("stock", event.target.value)} /></label>
         <label>SKU<input value={form.sku} onChange={(event) => set("sku", event.target.value)} /></label>
         <label className="span-2">Tag (optional)<input value={form.tag} onChange={(event) => set("tag", event.target.value)} placeholder="New, Bestseller…" /></label>
+        <label className="span-2 check-label"><input type="checkbox" checked={form.featured} onChange={(event) => set("featured", event.target.checked)} /> Feature on homepage (replaces the current featured product)</label>
         <label className="span-2">Image{product !== "new" && product.image_url ? " (leave empty to keep the current one)" : ""}<input type="file" accept="image/*" onChange={(event) => setFile(event.target.files?.[0] ?? null)} /></label>
       </div>
       {error && <p className="admin-error">{error}</p>}

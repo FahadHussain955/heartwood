@@ -9,6 +9,7 @@ export const site = {
   name: "Afzal Enterprises",
   tagline: "Office, home & commercial furniture",
   phone: "0317 4892190",
+  phone2: "0331 6529490",
   whatsapp: "923174892190",
   email: "Khurramch20@gmail.com",
   hours: "Mon – Sat, 10:00 am – 8:00 pm",
@@ -28,6 +29,36 @@ export const photo = (id: string, width = 900) => {
   // Banners have 320px copies in public/banners/thumbs for small thumbnails.
   if (id.startsWith("/banners/") && width <= 500) return id.replace("/banners/", "/banners/thumbs/");
   return id.startsWith("http") || id.startsWith("/") ? id : `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`;
+};
+// Non-square room photos (found by sampling each product photo's edges). Padding these with one flat colour leaves
+// visible bands, so their gaps are filled with a blurred copy of the same photo instead.
+const scenePhotos = new Set([
+  "cdt2nnfhgp8uzqyinsh4", "baeaicuq5fpdt6dwyfgb", "wnc9vxhtl7rnyq9hmugn", "grjlfmycpfchfvrgvn1p", "gks8d5cw8wvn6vg0t9ii",
+  "ciiwgsxyxndlr20gzqsn", "cgklynwxdht0kogrzq9v", "pyjiokcqivcoshnk8hcz", "jcip0uwsoi2hjbo7sabc", "yg12dyqzlb0todlfzelw",
+  "b0dg1yjr68etla0jugat", "nu5luoaohrj5wm71rzuy", "munswyw7fnrgcx35ho0u", "pcazlropgyct1dfktm8i", "q3ip8vtabaql9ozriftj",
+  "ikawgnkeiofdbsxwmvpu", "gekxtil5ju1wrjiebcce", "hbfuk5rra5wekjzn0g4w", "vwnjygo5kii1vzmbesza", "vdaa6lj77ackysucxwar",
+  "msty2abqlbh4ulspe6pr", "wvd71rgaytispeodevaf", "ikkxpt9y7sk2iksvmutd", "rstfmarbgeavshi9fb0i", "vbfqrbc8h8zqtuv2ulun",
+  "rjfrdtmrcxasnyd9xzzb", "nksbau548hbfkbd7vlat", "pcz4ulwaninl45ubmiia", "oawk9z0bujwx4hy4x9xc", "r2wgy1lwdqerbvbphb6j",
+  "xsjucdgnrjgzpyodscxh", "p8kf13egsfeobuttfpz2", "evlj6hemf9ywkcuc2rwz",
+  "zqo2gzthjtnhgtaqpvqk",
+]);
+
+// Photos with flat bars baked into the file (e.g. a tall photo pasted onto a white square). Cloudinary trims the
+// bars off (e_trim) before squaring, otherwise they show up as white strips inside the card.
+const barredPhotos = new Set(["xsjucdgnrjgzpyodscxh", "p8kf13egsfeobuttfpz2", "ulxjpoftruimeznv9ras"]);
+
+// Product photos come in mixed shapes. Cloudinary turns each into a square that fills the product card edge to edge
+// without cropping: plain photos are padded with their own edge colour (c_pad,b_auto), room photos with a blur of themselves.
+// Every photo first loses 1.5% off each edge, which drops the thin lines left along the borders of some photos.
+export const squarePhoto = (url: string, width = 700) => {
+  const match = url.match(/\/image\/upload\/(?:v\d+\/)?((?:[^/]+\/)*([^/.]+))\.\w+$/);
+  if (!url.includes("res.cloudinary.com") || !match) return photo(url, width);
+  const [, publicId, id] = match;
+  const clean = `${barredPhotos.has(id) ? "e_trim/" : ""}c_crop,w_0.97,h_0.97,g_center/`;
+  const square = scenePhotos.has(id)
+    ? `c_fill,ar_1:1,w_${width}/e_blur:2000/l_${publicId.replaceAll("/", ":")}/${clean}c_fit,w_${width},h_${width}/fl_layer_apply`
+    : `c_pad,ar_1:1,b_auto,w_${width}`;
+  return url.replace("/image/upload/", `/image/upload/${clean}${square}/`);
 };
 export const money = (amount: number) => `Rs. ${amount.toLocaleString("en-PK")}`;
 export const telLink = `tel:${site.phone.replaceAll(" ", "")}`;
@@ -60,6 +91,7 @@ export type Product = {
   reviews: number;
   tag?: string;
   size?: string;
+  featured?: boolean;
 };
 
 
@@ -91,21 +123,25 @@ export const slides = [
   { eyebrow: "Furniture for your home", title: "Make room for living.", text: "Thoughtful sofas and living-room pieces made to bring comfort and warmth home.", cta: "Explore home furniture", href: "/shop/living-room", category: "living-room", image: "/hero/living-room.jpg", ratio: "16 / 9" },
   { eyebrow: "Office collection 2026", title: "Workspaces that work as hard as you do.", text: "Executive chairs, desks and meeting tables — built in Pakistan, delivered and installed nationwide.", cta: "Shop office furniture", href: "/shop/office", category: "office", image: "/hero/office.jpg", ratio: "16 / 9" },
   { eyebrow: "Open-plan workstations", title: "A floor built for the whole team.", text: "Shared desks, task chairs and storage, laid out for busy offices.", cta: "Shop workstations", href: "/shop/office/workstations", category: "office", image: "/hero/workstations.png", ratio: "16 / 9" },
-  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.png", ratio: "16 / 9" },
+  { eyebrow: "Café & restaurant", title: "Seating made for a full house.", text: "Durable café chairs, tables and booths designed for busy floors and long evenings.", cta: "Explore café furniture", href: "/shop/cafe", category: "cafe", image: "/hero/cafe.jpg", ratio: "16 / 9" },
   { eyebrow: "Learning spaces", title: "A better place to learn.", text: "Practical, durable furniture for classrooms, libraries and growing minds.", cta: "Shop school furniture", href: "/shop/school", category: "school", image: "/hero/school.jpg", ratio: "16 / 9" },
 ];
 
 export type HeroSlide = (typeof slides)[number];
 
+// Plain-background photos of real products from each range. Cloudinary pads each one to 4:3 with its own
+// edge colour (c_pad,b_auto), so it fills the tile exactly without cropping or visible bars.
+const tilePhoto = (id: string) => `https://res.cloudinary.com/aepcimps/image/upload/c_pad,ar_4:3,b_auto,w_700/products/${id}.jpg`;
+
 export const homeTiles = [
-  { title: "Executive Chairs", href: "/shop/office/executive-chairs", category: "office", sub: "executive-chairs", image: "1612372606404-0ab33e7187ee" },
-  { title: "Workstations", href: "/shop/office/workstations", category: "office", sub: "workstations", image: "1497366811353-6870744d04b2" },
-  { title: "Meeting Tables", href: "/shop/office/meeting-tables", category: "office", sub: "meeting-tables", image: "1571624436279-b272aff752b5" },
-  { title: "Study Furniture", href: "/shop/study", category: "study", image: "1600494603989-9650cf6ddd3d" },
-  { title: "Living Room & Bedroom", href: "/shop/living-room", category: "living-room", image: "1618221195710-dd6b41faaea6" },
-  { title: "Bean Bags", href: "/shop/beanbags", category: "beanbags", image: "1493663284031-b7e3aefcae8e" },
-  { title: "Café & Restaurant", href: "/shop/cafe", category: "cafe", image: "1554118811-1e0d58224f24" },
-  { title: "School Furniture", href: "/shop/school", category: "school", image: "1507842217343-583bb7270b66" },
+  { title: "Executive Chairs", href: "/shop/office/executive-chairs", category: "office", sub: "executive-chairs", image: tilePhoto("p89kkcsvusvfjok4scbm") },
+  { title: "Workstations", href: "/shop/office/workstations", category: "office", sub: "workstations", image: tilePhoto("nbr8l4yikrdrecdsv9sn") },
+  { title: "Meeting Tables", href: "/shop/office/meeting-tables", category: "office", sub: "meeting-tables", image: tilePhoto("akgctawpr4okrgannwhh") },
+  { title: "Study Furniture", href: "/shop/study", category: "study", image: tilePhoto("hl7rifnoe9dqyefd8nrg") },
+  { title: "Living Room", href: "/shop/living-room", category: "living-room", image: tilePhoto("unvg6kfjam0kneeoxlfl") },
+  { title: "Bean Bags", href: "/shop/beanbags", category: "beanbags", image: tilePhoto("lc5xohfap3fix9cyt4si") },
+  { title: "Café & Restaurant", href: "/shop/cafe", category: "cafe", image: tilePhoto("wm8i6rkpr4z8fpjkb20m") },
+  { title: "School Furniture", href: "/shop/school", category: "school", image: tilePhoto("w42ifwumq8kjclypsubn") },
 ];
 
 export const promos = [
@@ -170,40 +206,6 @@ export const projects = [
     solution: "Custom booth seating in wipe-clean commercial vinyl, stackable café chairs and tables that join together for bigger groups.",
     products: ["diner-booth-set", "loop-cafe-chair", "oak-cafe-set"],
     facts: [["Covers", "180"], ["Booths", "14"], ["Timeline", "5 weeks"]],
-  },
-];
-
-/* ---------- Journal ---------- */
-
-export const posts = [
-  {
-    slug: "how-to-choose-an-ergonomic-office-chair", title: "How to choose an ergonomic office chair", excerpt: "Seat depth, lumbar support and armrests — what to check before you buy.", date: "Sep 18, 2026", readTime: "5 min read", image: "1580480055273-228ff5388ef8",
-    body: [
-      ["Start with seat height", "Sit with your feet flat on the floor and your knees at roughly 90°. A good chair should adjust to that height with a smooth gas lift — for most people between 44 and 54 cm."],
-      ["Check the seat depth", "You should be able to fit two to three fingers between the front edge of the seat and the back of your knees. Chairs with a seat slider let you fine-tune this, which matters if several people share a chair."],
-      ["Lumbar support is not optional", "The lower back has a natural inward curve. A chair with adjustable lumbar support fills that curve so your muscles don't have to. Mesh backs flex to your shape; upholstered backs usually add a separate lumbar pad."],
-      ["Armrests and tilt", "Armrests should let your shoulders relax with elbows close to 90°. A synchro-tilt mechanism — where the back reclines faster than the seat — keeps your feet on the floor as you lean back."],
-      ["Try before you buy", "Visit a showroom and sit in the chair for at least ten minutes. Check the gas lift and mechanism — the parts that wear out first."],
-    ],
-  },
-  {
-    slug: "planning-a-workstation-layout", title: "Planning a workstation layout for a small office", excerpt: "Fit more people comfortably with smarter desk clusters and storage.", date: "Sep 04, 2026", readTime: "6 min read", image: "1497366811353-6870744d04b2",
-    body: [
-      ["Measure twice", "Start with an accurate floor plan including columns, windows, sockets and doors. Allow at least 90 cm behind each chair for people to move freely."],
-      ["Choose the right desk size", "For laptop-and-monitor work, 120 × 60 cm per person is comfortable. Teams that work with drawings or multiple screens may need 140 cm or more."],
-      ["Clusters vs. linear benches", "Face-to-face clusters save space and encourage collaboration; linear benches along windows give everyone daylight. Many offices mix both."],
-      ["Plan power and cables early", "Decide where floor boxes and wall sockets are before ordering desks. Workstations with wire trays and power modules keep cables off the floor."],
-      ["Leave room to grow", "Modular workstations let you add seats later with matching finishes. Ask for a free layout plan — it is quicker to change a drawing than a floor."],
-    ],
-  },
-  {
-    slug: "cafe-seating-that-survives-the-rush", title: "Café seating that survives the rush", excerpt: "Materials, spacing and finishes that last on a busy restaurant floor.", date: "Aug 21, 2026", readTime: "4 min read", image: "1554118811-1e0d58224f24",
-    body: [
-      ["Pick commercial-grade materials", "Home furniture isn't built for 12-hour service. Look for commercial-rated frames, compact laminate or sealed hardwood tops, and wipe-clean upholstery."],
-      ["Mix seating types", "Booths are great for families and longer stays, 2-tops suit couples and laptop users, and bar stools turn window ledges into extra covers."],
-      ["Get the spacing right", "Allow around 45–60 cm between tables for guests and at least 90 cm for service aisles. Tables that join together give you flexibility for groups."],
-      ["Think about stacking and cleaning", "Stackable chairs make floor cleaning faster at close. Choose finishes that hide scuffs and colours that match your brand."],
-    ],
   },
 ];
 

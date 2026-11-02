@@ -75,6 +75,13 @@ export const catalog: Category[] = [
     ],
   },
   {
+    slug: "industrial-racks", name: "Industrial Racks", short: "Industrial Racks", image: "/banners/office-storage.jpg",
+    description: "Heavy-duty steel racks for warehouses, shops, workshops and stores — built to carry load and sized to your space.",
+    subcategories: [
+      { slug: "storage-racks", name: "Storage Racks", image: "/banners/office-storage.jpg", blurb: "Heavy-duty steel racks for warehouses, shops and stores, made to your size.", features: ["Heavy-duty steel frame","Adjustable shelf heights","Powder-coated finish","Custom sizes available"], specs: {"Material":"Powder-coated steel","Shelves":"Adjustable","Use":"Warehouse / shop / store"}, colors: ["Grey","Black","Blue"], gallery: [], madeToOrder: true },
+    ],
+  },
+  {
     slug: "outdoor", name: "Outdoor Furniture", short: "Outdoor", image: "/banners/outdoor.jpg",
     description: "Garden chairs, swings and patio sets for lawns, terraces and balconies.",
     subcategories: [

@@ -3,7 +3,7 @@ import { catalog, type Product } from "@/lib/store";
 
 type Row = {
   id: string; name: string; type: string; category: string; sub: string; price: number;
-  image_url: string | null; rating: number; reviews: number; tag: string | null; size: string | null;
+  image_url: string | null; rating: number; reviews: number; tag: string | null; size: string | null; featured?: boolean | null;
 };
 
 const fallbackImage = catalog[0].image;
@@ -24,7 +24,7 @@ export async function getProducts(): Promise<Product[]> {
   return (data as Row[]).map((row) => ({
     id: row.id, name: row.name, type: row.type, category: row.category, sub: row.sub, price: row.price,
     image: row.image_url ?? fallbackImage, rating: Number(row.rating),
-    reviews: row.reviews, tag: row.tag ?? undefined, size: row.size ?? undefined,
+    reviews: row.reviews, tag: row.tag ?? undefined, size: row.size ?? undefined, featured: row.featured ?? false,
   }));
 }
 

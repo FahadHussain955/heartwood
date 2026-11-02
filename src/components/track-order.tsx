@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { Check, PackageCheck, Pencil, Search, Truck, XCircle, ClipboardList } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Check, ChevronDown, ClipboardList, LogIn, PackageCheck, Pencil, Truck, XCircle } from "lucide-react";
+import { useCart } from "@/components/cart";
 import { money, site, telLink } from "@/lib/store";
 
 type Order = {
-  id: number; owner: boolean; name?: string; address?: string; subtotal: number; status: Status; created_at: string;
+  id: number; name: string; phone: string; address: string; subtotal: number; status: Status; created_at: string;
   items: { id: string; name: string; price: number; qty: number }[];
 };
 type Status = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
@@ -17,127 +19,133 @@ const steps = [
   { key: "delivered", label: "Delivered", icon: Check },
 ] as const;
 
+const placedOn = (date: string) => new Date(date).toLocaleDateString("en-PK", { day: "numeric", month: "short", year: "numeric" });
+
+// Lists the orders placed from the signed-in account. Only that account can see them, and edit or cancel one while it is pending.
 export function TrackOrder() {
-  const [order, setOrder] = useState<Order | null>(null);
-  const [credentials, setCredentials] = useState({ id: "", phone: "" });
+  const { user, requireLogin } = useCart();
+  const [orders, setOrders] = useState<Order[] | null>(null);
+  const [signedOut, setSignedOut] = useState(false);
+  const [openId, setOpenId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState(false);
   const [draft, setDraft] = useState<{ name: string; address: string; qty: Record<string, number> } | null>(null);
 
-  const request = async (cancel: boolean, who = credentials) => {
+  // The server reads the session cookie, so this works before the browser has loaded the user, and reloads on sign-in or sign-out.
+  const userId = user?.id;
+  useEffect(() => {
+    let live = true;
+    fetch("/api/orders/track").then(async (res) => {
+      const result = await res.json().catch(() => ({}));
+      if (!live) return;
+      setSignedOut(res.status === 401);
+      if (res.ok) {
+        setOrders(result.orders as Order[]);
+        setOpenId((result.orders as Order[])[0]?.id ?? null);
+        setError("");
+      } else {
+        setOrders(null);
+        if (res.status !== 401) setError(result.error || "Your orders couldn't be loaded. Please try again or call us.");
+      }
+    });
+    return () => { live = false; };
+  }, [userId]);
+
+  const send = async (body: { id: number; cancel?: boolean; update?: { name: string; address: string; items: { id: string; qty: number }[] } }) => {
     setBusy(true);
     setError("");
-    const res = await fetch("/api/orders/track", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...who, cancel }),
-    });
+    const res = await fetch("/api/orders/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const result = await res.json().catch(() => ({}));
     setBusy(false);
+    if (res.status === 401) return setSignedOut(true);
+    if (!res.ok) return setError(result.error || "Something went wrong. Please try again or call us.");
+    setOrders(result.orders as Order[]);
     setConfirming(false);
     setDraft(null);
-    if (!res.ok) return setError(result.error || "Something went wrong. Please try again or call us.");
-    setOrder(result.order as Order);
   };
 
-  const startEdit = () => {
-    if (!order) return;
-    setError("");
-    setDraft({ name: order.name ?? "", address: order.address ?? "", qty: Object.fromEntries(order.items.map((item) => [item.id, item.qty])) });
-  };
-
-  const save = async () => {
-    if (!draft) return;
-    setBusy(true);
-    setError("");
-    const res = await fetch("/api/orders/track", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...credentials, update: { name: draft.name, address: draft.address, items: Object.entries(draft.qty).map(([id, qty]) => ({ id, qty })) } }),
-    });
-    const result = await res.json().catch(() => ({}));
-    setBusy(false);
-    if (!res.ok) return setError(result.error || "Something went wrong. Please try again or call us.");
-    setOrder(result.order as Order);
+  const toggle = (id: number) => {
+    setOpenId(openId === id ? null : id);
+    setConfirming(false);
     setDraft(null);
+    setError("");
   };
 
-  const lookup = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const who = { id: String(form.get("id") ?? ""), phone: "" };
-    setCredentials(who);
-    setOrder(null);
-    void request(false, who);
+  const startEdit = (order: Order) => {
+    setError("");
+    setDraft({ name: order.name, address: order.address, qty: Object.fromEntries(order.items.map((item) => [item.id, item.qty])) });
   };
 
-  const verify = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const who = { ...credentials, phone: String(new FormData(event.currentTarget).get("phone") ?? "") };
-    setCredentials(who);
-    void request(false, who);
-  };
+  if (signedOut) return <div className="track">
+    <div className="track-form">
+      <p className="track-note">Please log in to track your orders. Only the account an order was placed from can see, edit or cancel it.</p>
+      <button className="button button-dark" onClick={() => requireLogin(() => {})}><LogIn size={17} /> Login / Sign up</button>
+    </div>
+  </div>;
 
-  const reached = order ? steps.findIndex((step) => step.key === order.status) : -1;
+  if (!orders) return <div className="track"><p className={error ? "checkout-error" : "track-note"} role={error ? "alert" : undefined}>{error || "Loading your orders…"}</p></div>;
+
+  if (!orders.length) return <div className="track">
+    <div className="track-form">
+      <p className="track-note">You haven&apos;t placed any orders from this account yet.</p>
+      <Link className="button button-dark" href="/shop">Start shopping</Link>
+    </div>
+  </div>;
 
   return <div className="track">
-    <form className="track-form" onSubmit={lookup}>
-      <div className="field"><label htmlFor="track-id">Order number</label><input id="track-id" name="id" required inputMode="numeric" placeholder="e.g. HW-2501" defaultValue={credentials.id} /></div>
-      {error && !order && <p className="checkout-error" role="alert">{error}</p>}
-      <button className="button button-dark" type="submit" disabled={busy}><Search size={17} /> {busy && !order ? "Looking up…" : "Track order"}</button>
-    </form>
+    {orders.map((order) => {
+      const open = order.id === openId;
+      const reached = steps.findIndex((step) => step.key === order.status);
+      const items = order.items.reduce((sum, item) => sum + item.qty, 0);
+      return <div className="track-card" key={order.id}>
+        <button className="track-head track-toggle" aria-expanded={open} onClick={() => toggle(order.id)}>
+          <div><p className="eyebrow">Order #HW-{order.id}</p><h2>{money(order.subtotal)}</h2><small>Placed {placedOn(order.created_at)} · {items} {items === 1 ? "item" : "items"}</small></div>
+          <span className="track-toggle-end"><span className={`track-status is-${order.status}`}>{order.status}</span><ChevronDown size={18} /></span>
+        </button>
 
-    {order && <div className="track-card">
-      <div className="track-head">
-        <div><p className="eyebrow">Order #HW-{order.id}</p><h2>{order.name ? `Hello, ${order.name}` : "Your order"}</h2><small>Placed {new Date(order.created_at).toLocaleDateString("en-PK", { day: "numeric", month: "short", year: "numeric" })}</small></div>
-        <span className={`track-status is-${order.status}`}>{order.status}</span>
-      </div>
+        {open && <>
+          {order.status === "cancelled"
+            ? <p className="track-cancelled"><XCircle size={18} /> This order has been cancelled.</p>
+            : <ol className="track-steps">{steps.map((step, index) => <li key={step.key} className={index <= reached ? "is-done" : ""}>
+              <span><step.icon size={18} /></span>{step.label}
+            </li>)}</ol>}
 
-      {order.status === "cancelled"
-        ? <p className="track-cancelled"><XCircle size={18} /> This order has been cancelled.</p>
-        : <ol className="track-steps">{steps.map((step, index) => <li key={step.key} className={index <= reached ? "is-done" : ""}>
-          <span><step.icon size={18} /></span>{step.label}
-        </li>)}</ol>}
+          {draft
+            ? <div className="track-edit">
+              <div className="field"><label htmlFor="edit-name">Name</label><input id="edit-name" value={draft.name} maxLength={120} onChange={(e) => setDraft({ ...draft, name: e.target.value })} /></div>
+              <div className="field"><label htmlFor="edit-address">Delivery address</label><textarea id="edit-address" rows={3} value={draft.address} maxLength={500} onChange={(e) => setDraft({ ...draft, address: e.target.value })} /></div>
+              <ul className="track-items">{order.items.map((item) => {
+                const qty = draft.qty[item.id] ?? 0;
+                const set = (value: number) => setDraft({ ...draft, qty: { ...draft.qty, [item.id]: Math.min(Math.max(value, 0), 99) } });
+                return <li key={item.id} className={qty === 0 ? "is-removed" : ""}>
+                  <span>{item.name}</span>
+                  <span className="track-qty"><button type="button" aria-label={`Decrease ${item.name}`} onClick={() => set(qty - 1)}>−</button><b>{qty}</b><button type="button" aria-label={`Increase ${item.name}`} onClick={() => set(qty + 1)}>+</button></span>
+                </li>;
+              })}</ul>
+              <small className="track-note">Set a quantity to 0 to remove that item.</small>
+              {error && <p className="checkout-error" role="alert">{error}</p>}
+              <button className="button button-dark" disabled={busy} onClick={() => send({ id: order.id, update: { name: draft.name, address: draft.address, items: Object.entries(draft.qty).map(([id, qty]) => ({ id, qty })) } })}>{busy ? "Saving…" : "Save changes"}</button>
+              <button className="button button-outline" disabled={busy} onClick={() => { setDraft(null); setError(""); }}>Discard</button>
+            </div>
+            : <>
+              <ul className="track-items">{order.items.map((item) => <li key={item.id}><span>{item.name} × {item.qty}</span><b>{money(item.price * item.qty)}</b></li>)}</ul>
+              <div className="track-total"><span>Order total</span><strong>{money(order.subtotal)}</strong></div>
+              <p className="track-address"><b>Delivering to:</b> {order.name}, {order.address} · {order.phone}</p>
+            </>}
 
-      {draft
-        ? <div className="track-edit">
-          <div className="field"><label htmlFor="edit-name">Name</label><input id="edit-name" value={draft.name} maxLength={120} onChange={(e) => setDraft({ ...draft, name: e.target.value })} /></div>
-          <div className="field"><label htmlFor="edit-address">Delivery address</label><textarea id="edit-address" rows={3} value={draft.address} maxLength={500} onChange={(e) => setDraft({ ...draft, address: e.target.value })} /></div>
-          <ul className="track-items">{order.items.map((item) => {
-            const qty = draft.qty[item.id] ?? 0;
-            const set = (value: number) => setDraft({ ...draft, qty: { ...draft.qty, [item.id]: Math.min(Math.max(value, 0), 99) } });
-            return <li key={item.id} className={qty === 0 ? "is-removed" : ""}>
-              <span>{item.name}</span>
-              <span className="track-qty"><button type="button" aria-label={`Decrease ${item.name}`} onClick={() => set(qty - 1)}>−</button><b>{qty}</b><button type="button" aria-label={`Increase ${item.name}`} onClick={() => set(qty + 1)}>+</button></span>
-            </li>;
-          })}</ul>
-          <small className="track-note">Set a quantity to 0 to remove that item.</small>
-          {error && <p className="checkout-error" role="alert">{error}</p>}
-          <button className="button button-dark" disabled={busy} onClick={save}>{busy ? "Saving…" : "Save changes"}</button>
-          <button className="button button-outline" disabled={busy} onClick={() => { setDraft(null); setError(""); }}>Discard</button>
-        </div>
-        : <>
-          <ul className="track-items">{order.items.map((item) => <li key={item.id}><span>{item.name} × {item.qty}</span><b>{money(item.price * item.qty)}</b></li>)}</ul>
-          <div className="track-total"><span>Order total</span><strong>{money(order.subtotal)}</strong></div>
-          {order.address && <p className="track-address"><b>Delivering to:</b> {order.address}</p>}
+          {order.status === "pending" && !draft && !confirming && <button className="button button-dark" onClick={() => startEdit(order)}><Pencil size={17} /> Edit order</button>}
+          {order.status === "pending" && !draft && (confirming
+            ? <div className="track-confirm">
+              <p>Cancel this order? This can&apos;t be undone.</p>
+              {error && <p className="checkout-error" role="alert">{error}</p>}
+              <button className="button button-accent" disabled={busy} onClick={() => send({ id: order.id, cancel: true })}>{busy ? "Cancelling…" : "Yes, cancel order"}</button>
+              <button className="button button-outline" disabled={busy} onClick={() => setConfirming(false)}>Keep order</button>
+            </div>
+            : <button className="button button-outline" onClick={() => setConfirming(true)}><XCircle size={17} /> Cancel order</button>)}
+          {order.status !== "pending" && order.status !== "cancelled" && <p className="track-note">Orders already being processed can&apos;t be changed or cancelled online — please call <a href={telLink}>{site.phone}</a>.</p>}
         </>}
-
-      {order.status === "pending" && !order.owner && <form className="track-edit" onSubmit={verify}>
-        <p className="track-note">Want to edit or cancel this order? Enter the phone number you used at checkout.</p>
-        <div className="field"><label htmlFor="verify-phone">Phone number</label><input id="verify-phone" name="phone" type="tel" required autoComplete="tel" placeholder="03XX XXXXXXX" /></div>
-        {error && <p className="checkout-error" role="alert">{error}</p>}
-        <button className="button button-outline" type="submit" disabled={busy}>{busy ? "Checking…" : "Verify"}</button>
-      </form>}
-
-      {order.status === "pending" && order.owner && !draft && !confirming && <button className="button button-dark" onClick={startEdit}><Pencil size={17} /> Edit order</button>}
-      {order.status === "pending" && order.owner && !draft && (confirming
-        ? <div className="track-confirm">
-          <p>Cancel this order? This can&apos;t be undone.</p>
-          {error && <p className="checkout-error" role="alert">{error}</p>}
-          <button className="button button-accent" disabled={busy} onClick={() => request(true)}>{busy ? "Cancelling…" : "Yes, cancel order"}</button>
-          <button className="button button-outline" disabled={busy} onClick={() => setConfirming(false)}>Keep order</button>
-        </div>
-        : <button className="button button-outline" onClick={() => setConfirming(true)}><XCircle size={17} /> Cancel order</button>)}
-      {order.status !== "pending" && order.status !== "cancelled" && <p className="track-note">Orders already being processed can&apos;t be changed or cancelled online — please call <a href={telLink}>{site.phone}</a>.</p>}
-    </div>}
+      </div>;
+    })}
   </div>;
 }

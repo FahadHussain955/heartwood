@@ -12,7 +12,7 @@ export default function ContactPage() {
 
     <section className="section section-tight">
       <div className="container contact-cards">
-        <a className="contact-card" href={telLink}><Phone size={22} /><small>Call us</small><strong>{site.phone}</strong><span>{site.hours}</span></a>
+        <div className="contact-card"><Phone size={22} /><small>Call us</small><strong><a href={telLink}>{site.phone}</a> · <a href={`tel:${site.phone2.replaceAll(" ", "")}`}>{site.phone2}</a></strong><span>{site.hours}</span></div>
         <a className="contact-card" href={whatsappLink(`Hi ${site.name}, I have a question.`)} target="_blank" rel="noreferrer"><MessageCircle size={22} /><small>WhatsApp</small><strong>Chat with us</strong><span>Quick replies during showroom hours</span></a>
         <a className="contact-card" href={`mailto:${site.email}`}><Mail size={22} /><small>Email</small><strong>{site.email}</strong><span>Quotations & corporate orders</span></a>
       </div>

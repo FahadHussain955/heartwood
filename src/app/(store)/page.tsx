@@ -6,11 +6,12 @@ import { ProductTabs } from "@/components/product-tabs";
 import { Testimonials } from "@/components/testimonials";
 import { SectionHeading } from "@/components/ui";
 import { getProducts } from "@/lib/products";
-import { getProduct, homeTiles, photo, posts, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
+import { getProduct, homeTiles, photo, productDetails, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
 
 export default async function Home() {
   const products = await getProducts();
-  const featured = getProduct(products, "black-leather-high-back-executive-chair") ?? products[0];
+  const featured = products.find((product) => product.featured) ?? getProduct(products, "black-leather-high-back-executive-chair") ?? products[0];
+  const featuredInfo = featured && productDetails(featured);
   return <>
     <HeroSlider slides={slides} />
 
@@ -26,7 +27,7 @@ export default async function Home() {
       <div className="container">
         <SectionHeading eyebrow="Shop by category" title="Furniture for every space" text="Office, commercial and home furniture — designed, manufactured and delivered by one team." link={{ label: "Shop all products", href: "/shop" }} />
         <div className="category-grid">{homeTiles.map((tile) => <Link className="category-card" href={tile.href} key={tile.title}>
-          <span className="category-img" style={{ backgroundImage: `url("${photo(tile.image, 600)}")` }} />
+          <span className="category-media"><span className="category-img" style={{ backgroundImage: `url("${photo(tile.image, 600)}")` }} /></span>
           <div className="category-label"><h3>{tile.title}</h3><span>{productsIn(products, tile.category, tile.sub).length} products</span></div>
           <span className="category-arrow"><ArrowUpRight size={18} /></span>
         </Link>)}</div>
@@ -59,14 +60,12 @@ export default async function Home() {
         <div className="highlight-media"><span style={{ backgroundImage: `url("${photo(featured.image, 1400)}")` }} />{featured.reviews > 0 && <div className="highlight-badge"><Star size={16} fill="currentColor" /> {featured.rating} average from {featured.reviews} reviews</div>}</div>
         <div className="highlight-copy">
           <p className="eyebrow">Featured · {featured.name}</p>
-          <h2>Built for the long workday.</h2>
-          <p>Supportive, adjustable and quietly premium. The {featured.name} is one of our most popular executive chairs — made for long days at the desk.</p>
+          <h2>{featured.name}</h2>
+          <p>{featuredInfo!.description}</p>
           <ul className="feature-list">
-            <li><BadgeCheck size={20} /><div><strong>Adjustable lumbar support</strong><span>Keeps your posture right all day</span></div></li>
-            <li><BadgeCheck size={20} /><div><strong>Synchro-tilt with lock</strong><span>Recline smoothly, lock in any position</span></div></li>
-            <li><BadgeCheck size={20} /><div><strong>Class-4 gas lift & steel base</strong><span>Rated for heavy daily use</span></div></li>
+            {featuredInfo!.sub.features.slice(0, 3).map((feature) => <li key={feature}><BadgeCheck size={20} /><div><strong>{feature}</strong></div></li>)}
           </ul>
-          <div className="highlight-price"><strong>Rs. {featured.price.toLocaleString("en-PK")}</strong><Link className="button button-dark" href={productHref(featured)}>View the chair <ArrowRight size={16} /></Link></div>
+          <div className="highlight-price"><strong>Rs. {featured.price.toLocaleString("en-PK")}</strong><Link className="button button-dark" href={productHref(featured)}>View product <ArrowRight size={16} /></Link></div>
         </div>
       </div>
     </section>}
@@ -98,16 +97,6 @@ export default async function Home() {
 
     <section className="section testimonials-section">
       <Testimonials />
-    </section>
-
-    <section className="section" id="journal">
-      <div className="container">
-        <SectionHeading eyebrow="From the journal" title="Ideas & buying guides" link={{ label: "Read all articles", href: "/blog" }} />
-        <div className="post-grid">{posts.map((post) => <Link className="post-card" href={`/blog/${post.slug}`} key={post.slug}>
-          <span className="post-img" style={{ backgroundImage: `url("${photo(post.image, 800)}")` }} />
-          <p className="post-date">{post.date} · {post.readTime}</p><h3>{post.title}</h3><p>{post.excerpt}</p><span className="text-link">Read more <ArrowRight size={15} /></span>
-        </Link>)}</div>
-      </div>
     </section>
 
     <section className="section seo-section">

@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { sendOrderEmails } from "@/lib/mail";
 import { notifyAdmin } from "@/lib/notify";
 
@@ -10,10 +10,15 @@ type Item = { id: string; qty: number };
 // POST { name, phone, address, items: [{ id, qty }] } → { id, total, items }
 // Saves the confirmed order, then notifies the admin so the customer can arrange payment on WhatsApp.
 export async function POST(req: Request) {
+  // Customers must have an account before an order can be placed. The order goes through their session,
+  // so place_order saves it to their account and only they can track it later.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Please sign in or create an account to place your order." }, { status: 401 });
+
   const body = (await req.json().catch(() => null)) as { name?: string; phone?: string; email?: string; address?: string; items?: Item[] } | null;
   if (!body || !Array.isArray(body.items)) return NextResponse.json({ error: "Invalid order" }, { status: 400 });
 
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false } });
   const items = body.items.map(({ id, qty }) => ({ id: String(id), qty: Number(qty) }));
   const name = String(body.name ?? "");
   const phone = String(body.phone ?? "");

@@ -6,7 +6,7 @@ export type Order = {
 };
 export type DbProduct = {
   id: string; name: string; type: string; category: string; sub: string; price: number;
-  image_url: string | null; image_public_id: string | null; stock: number; sku: string | null; tag: string | null;
+  image_url: string | null; image_public_id: string | null; stock: number; sku: string | null; tag: string | null; featured: boolean | null;
 };
 export type Customer = { key: string; name: string; phone: string; address: string; orders: Order[]; spent: number; last: string };
 export type AdminProfile = { user_id: string; email: string; name: string; role: "owner" | "staff" };
