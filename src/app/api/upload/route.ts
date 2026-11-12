@@ -6,19 +6,19 @@ export const runtime = "nodejs";
 
 const isAdmin = async () => !!(await getAdmin());
 
-// POST multipart/form-data with `file` (and optional `folder`). Returns { url, publicId }.
+// POST multipart/form-data with `file` (and optional `folder`, and `watermark=1` to add the logo — project folders only). Returns { url, publicId }.
 export async function POST(req: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const form = await req.formData();
   const file = form.get("file");
-  if (!(file instanceof File) || !file.type.startsWith("image/"))
+  if (!(file instanceof File) || !(file.type.startsWith("image/") || /\.hei[cf]$/i.test(file.name)))
     return NextResponse.json({ error: "An image file is required" }, { status: 400 });
   if (file.size > 10 * 1024 * 1024) return NextResponse.json({ error: "Max 10 MB" }, { status: 413 });
 
   const folder = String(form.get("folder") ?? "products").replace(/[^a-z0-9/_-]/gi, "");
   try {
-    const result = await uploadImage(Buffer.from(await file.arrayBuffer()), folder);
+    const result = await uploadImage(Buffer.from(await file.arrayBuffer()), folder, { watermark: form.get("watermark") === "1" });
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : (error as { message?: string })?.message;

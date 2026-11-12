@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Building2, ClipboardList, Hammer, PencilRuler, Truck } from "lucide-react";
 import { CtaBand, PageHero, SectionHeading } from "@/components/ui";
-import { photo, projects, sectors } from "@/lib/store";
+import { getProjects, projectCover, sized } from "@/lib/projects";
+import { sectors } from "@/lib/store";
 
 export const metadata: Metadata = { title: "Projects", description: "Offices, cafés and restaurants we have furnished across Pakistan." };
 
@@ -13,19 +14,20 @@ const process = [
   { icon: Truck, title: "Delivery & installation", text: "Our team delivers, installs and cleans up — often over a weekend." },
 ];
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
   return <>
     <PageHero crumbs={[{ label: "Projects" }]} eyebrow="Our work" title="Spaces we've furnished" text="From corporate headquarters to neighbourhood cafés — complete fit-outs, delivered on schedule." image="1497366754035-f200968a6e72" />
 
     <section className="section">
       <div className="container">
-        <div className="project-list">{projects.map((project) => <Link className="project-row" href={`/projects/${project.slug}`} key={project.slug}>
-          <span className="project-row-img" style={{ backgroundImage: `url("${photo(project.image, 1000)}")` }} />
+        <div className="project-list">{projects.map((project) => <Link className="project-row" href={`/projects/${project.id}`} key={project.id}>
+          <span className="project-row-img" style={{ backgroundImage: `url("${sized(projectCover(project), 1000)}")` }} />
           <div>
             <p className="eyebrow">{project.sector} · {project.place}</p>
             <h2>{project.title}</h2>
             <p>{project.summary}</p>
-            <dl className="facts">{project.facts.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+            <dl className="facts"><div><dt>Location</dt><dd>{project.place}</dd></div><div><dt>Photos</dt><dd>{project.images.length}</dd></div></dl>
             <span className="text-link">View project <ArrowRight size={15} /></span>
           </div>
         </Link>)}</div>

@@ -11,7 +11,7 @@ export type DbProduct = {
 export type Customer = { key: string; name: string; phone: string; address: string; orders: Order[]; spent: number; last: string };
 export type AdminProfile = { user_id: string; email: string; name: string; role: "owner" | "staff" };
 export type Review = { id: number; product_id: string; order_id: number | null; reviewer: string; rating: number; comment: string; created_at: string };
-export type Tab = "Overview" | "Orders" | "Products" | "Customers" | "Invoices" | "Reports" | "Reviews" | "Settings";
+export type Tab = "Overview" | "Orders" | "Products" | "Projects" | "Customers" | "Invoices" | "Reports" | "Reviews" | "Settings";
 
 export const statuses: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled"];
 export type StockView = "all" | "low" | "out";

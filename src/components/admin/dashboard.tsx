@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Bot, Box, ClipboardList, ChevronDown, FileText, LayoutDashboard, LogOut, MessageSquare, PackagePlus, Search, Settings as SettingsIcon, ShoppingCart, Store, Users } from "lucide-react";
+import { Bell, Bot, Box, ClipboardList, ChevronDown, FileText, Images, LayoutDashboard, LogOut, MessageSquare, PackagePlus, Plus, Search, Settings as SettingsIcon, ShoppingCart, Store, Users } from "lucide-react";
 import { Logo } from "@/components/logo";
+import type { Project } from "@/lib/projects";
 import { createClient } from "@/lib/supabase/client";
 import { money, photo, site } from "@/lib/store";
 import { Customers } from "./customers";
@@ -14,6 +15,7 @@ import { Orders } from "./orders";
 import { Overview } from "./overview";
 import { ProductAssistant } from "./product-assistant";
 import { ProductEditor, Products } from "./products";
+import { ProjectEditor, Projects } from "./projects";
 import { Reports } from "./reports";
 import { Reviews } from "./reviews";
 import { Settings } from "./settings";
@@ -25,10 +27,10 @@ import {
 
 const nav: { label: Tab; icon: typeof Box }[] = [
   { label: "Overview", icon: LayoutDashboard }, { label: "Orders", icon: ShoppingCart },
-  { label: "Invoices", icon: FileText }, { label: "Reports", icon: ClipboardList }, { label: "Products", icon: Box }, { label: "Customers", icon: Users }, { label: "Reviews", icon: MessageSquare },
+  { label: "Invoices", icon: FileText }, { label: "Reports", icon: ClipboardList }, { label: "Products", icon: Box }, { label: "Projects", icon: Images }, { label: "Customers", icon: Users }, { label: "Reviews", icon: MessageSquare },
 ];
 const subtitles: Record<Tab, string> = {
-  Overview: "", Orders: "Confirm, ship and track every order from checkout.", Products: "Add, edit and restock your catalogue.",
+  Overview: "", Orders: "Confirm, ship and track every order from checkout.", Products: "Add, edit and restock your catalogue.", Projects: "Completed projects shown on the website. Photos get the logo watermark automatically.",
   Invoices: "Open, print or save an invoice for any order.", Reports: "Daily orders, cancellations and net sales.", Customers: "Everyone who has ordered from your store.", Reviews: "What customers say about your products. Remove any you don't want shown.", Settings: "Your admin profile and password.",
 };
 const greeting = () => { const hour = new Date().getHours(); return hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening"; };
@@ -42,7 +44,10 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState({ orders: true, products: true, reviews: true });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsVersion, setProjectsVersion] = useState(0);
+  const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
+  const [loading, setLoading] = useState({ orders: true, products: true, reviews: true, projects: true });
   const [reviewsVersion, setReviewsVersion] = useState(0);
   const [ordersVersion, setOrdersVersion] = useState(0);
   const [productsVersion, setProductsVersion] = useState(0);
@@ -92,6 +97,14 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
       setLoading((current) => ({ ...current, reviews: false }));
     });
   }, [supabase, reviewsVersion, flash]);
+
+  useEffect(() => {
+    supabase.from("projects").select("*").order("sort").order("created_at").then(({ data, error }) => {
+      if (error) flash(`Couldn't load projects: ${error.message}`, true);
+      else setProjects(data as Project[]);
+      setLoading((current) => ({ ...current, projects: false }));
+    });
+  }, [supabase, projectsVersion, flash]);
 
   // Live updates: new checkouts (and changes made in another admin tab) arrive without a refresh.
   // The socket must carry the admin's token, otherwise RLS hides every order event from it.
@@ -222,6 +235,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
               <p>{tab === "Overview" ? (unseen.length ? `You have ${unseen.length} new ${unseen.length === 1 ? "order" : "orders"} to review.` : "Here's what's happening with your store.") : subtitles[tab]}</p>
             </div>
             {tab === "Products" && <button className="admin-primary-button" onClick={() => setEditor("new")}><PackagePlus size={17} /> Add product</button>}
+            {tab === "Projects" && <button className="admin-primary-button" onClick={() => setProjectEditor("new")}><Plus size={17} /> Add project</button>}
           </div>
           {notice && <div className={notice.error ? "admin-notice admin-notice-error" : "admin-notice"} role="status">{notice.text}</div>}
 
@@ -230,6 +244,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
           {tab === "Invoices" && <Invoices orders={orders} loading={loading.orders} filter={filters.Invoices} setFilter={(value) => setFilters((current) => ({ ...current, Invoices: value }))} onOpenOrder={openOrder} />}
           {tab === "Reports" && <Reports orders={orders} loading={loading.orders} onOpenOrder={openOrder} />}
           {tab === "Products" && <Products items={products} loading={loading.products} stock={stockView} setStock={setStockView} filter={filters.Products} setFilter={(value) => setFilters((current) => ({ ...current, Products: value }))} onEdit={setEditor} onChanged={reloadProducts} onNotice={flash} />}
+          {tab === "Projects" && <Projects items={projects} loading={loading.projects} onEdit={setProjectEditor} onChanged={() => setProjectsVersion((value) => value + 1)} onNotice={flash} />}
           {tab === "Customers" && <Customers orders={orders} loading={loading.orders} filter={filters.Customers} setFilter={(value) => setFilters((current) => ({ ...current, Customers: value }))} onViewOrders={(phone) => goTo("Orders", phone)} />}
           {tab === "Reviews" && <Reviews reviews={reviews} products={products} loading={loading.reviews} onChanged={() => { setReviewsVersion((value) => value + 1); reloadProducts(); }} onNotice={flash} />}
           {tab === "Settings" && <Settings admin={admin} onRenamed={(name) => { setAdmin((current) => ({ ...current, name })); router.refresh(); }} onNotice={flash} />}
@@ -242,6 +257,7 @@ export function AdminDashboard({ admin: initialAdmin }: { admin: AdminProfile })
       {assistantOpen
         ? <ProductAssistant onClose={() => setAssistantOpen(false)} onProductAdded={() => { reloadProducts(); flash("Product added by the assistant."); }} />
         : <button className="admin-primary-button assistant-launcher" onClick={() => setAssistantOpen(true)}><Bot size={16} /> Add with assistant</button>}
+      {projectEditor && <ProjectEditor key={projectEditor === "new" ? "new" : projectEditor.id} project={projectEditor} nextSort={projects.reduce((max, project) => Math.max(max, project.sort), 0) + 1} onClose={() => setProjectEditor(null)} onSaved={(message) => { setProjectEditor(null); flash(message); setProjectsVersion((value) => value + 1); }} />}
       {editor && <ProductEditor key={editor === "new" ? "new" : editor.id} product={editor} onClose={() => setEditor(null)} onSaved={(message) => { setEditor(null); flash(message); reloadProducts(); }} />}
     </main>
   );

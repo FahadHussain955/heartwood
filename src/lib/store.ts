@@ -11,7 +11,7 @@ export const site = {
   phone: "0317 4892190",
   phone2: "0331 6529490",
   whatsapp: "923174892190",
-  email: "Khurramch20@gmail.com",
+  email: "Afzalenterprises144@gmail.com",
   hours: "Mon – Sat, 10:00 am – 8:00 pm",
   freeDeliveryFrom: 50000,
   social: [
@@ -168,46 +168,7 @@ export const testimonials = [
   { quote: "Amazing service.", name: "Ayesha T.", role: "Interior designer, Lahore", date: "Jul 21, 2026" },
 ];
 
-/* ---------- Projects ---------- */
-
-export const projects = [
-  {
-    slug: "corporate-headquarters-gulberg", title: "Corporate headquarters", place: "Gulberg, Lahore", sector: "Corporate office", year: "2026", timeline: "6 weeks",
-    scope: "140 workstations · 6 meeting rooms", image: "1497366754035-f200968a6e72", gallery: ["1556761175-4b46a572b786", "1517502884422-41eaead166d4", "1571624436279-b272aff752b5"],
-    summary: "A complete fit-out for a 3-floor headquarters — open-plan desking, glass-walled meeting rooms, executive cabins and a boardroom.",
-    challenge: "The client was moving 140 staff into a new building and needed the entire floor furnished within six weeks, with no downtime on move-in day.",
-    solution: "We planned the layout floor by floor, manufactured linear bench desks to fit between columns, and installed everything over two weekends. Every seat got an ergonomic task chair and a personal storage pedestal.",
-    products: ["linear-6-bench", "flexmesh-pro-chair", "summit-meeting-table", "aurum-executive-chair", "walnut-executive-desk"],
-    facts: [["Seats", "140"], ["Meeting rooms", "6"], ["Timeline", "6 weeks"]],
-  },
-  {
-    slug: "specialty-coffee-bar", title: "Specialty coffee bar", place: "Johar Town, Lahore", sector: "Café", year: "2025", timeline: "3 weeks",
-    scope: "Café chairs, bar stools & booths", image: "1501339847302-ac426a4a7cbb", gallery: ["1554118811-1e0d58224f24", "1592078615290-033ee584e267", "1581539250439-c96689b516dd"],
-    summary: "Warm, industrial seating for a busy neighbourhood coffee bar — window counters, café tables and a row of booths.",
-    challenge: "A narrow, deep floor plan that needed to seat 60 guests without feeling cramped, and furniture tough enough for 14-hour days.",
-    solution: "We combined a long bar counter with stools, 2-seater bistro tables along the window, and made-to-measure booths down the back wall to maximise covers.",
-    products: ["oslo-cafe-chair", "barista-bar-stool", "round-bistro-table", "brasserie-booth"],
-    facts: [["Covers", "60"], ["Booths", "5"], ["Timeline", "3 weeks"]],
-  },
-  {
-    slug: "tech-campus-floor", title: "Tech campus floor", place: "DHA, Lahore", sector: "Technology", year: "2025", timeline: "4 weeks",
-    scope: "Open-plan desks & lounge seating", image: "1572521165329-b197f9ea3da6", gallery: ["1524758631624-e2822e304c36", "1497366811353-6870744d04b2", "1541558869434-2840d308329a"],
-    summary: "Flexible desking and breakout lounges for a fast-growing software company.",
-    challenge: "The team was growing every quarter and needed desks that could be reconfigured without buying new furniture.",
-    solution: "Modular cluster workstations that expand seat by seat, ergonomic mesh chairs for developers and a lounge zone with swivel chairs for informal meetings.",
-    products: ["pod-4-workstation", "flexmesh-pro-chair", "cobalt-lounge-swivel", "tower-shelf-unit"],
-    facts: [["Seats", "85"], ["Lounge zones", "3"], ["Timeline", "4 weeks"]],
-  },
-  {
-    slug: "family-restaurant", title: "Family restaurant", place: "Model Town, Lahore", sector: "Restaurant", year: "2024", timeline: "5 weeks",
-    scope: "180-cover dining fit-out", image: "1559329007-40df8a9345d8", gallery: ["1555396273-367ea4eb4db5", "1577140917170-285929fb55b7", "1505843490538-5133c6c7d0e1"],
-    summary: "A 180-cover restaurant with family booths, flexible 4-tops and a private dining area.",
-    challenge: "The owners wanted large families and small groups to be seated equally well, with furniture that is easy to clean after every service.",
-    solution: "Custom booth seating in wipe-clean commercial vinyl, stackable café chairs and tables that join together for bigger groups.",
-    products: ["diner-booth-set", "loop-cafe-chair", "oak-cafe-set"],
-    facts: [["Covers", "180"], ["Booths", "14"], ["Timeline", "5 weeks"]],
-  },
-];
+/* Projects live in the Supabase `projects` table (see src/lib/projects.ts), managed from the admin. */
 
 export const showrooms = [
   { name: "Afzal Enterprises", city: "Lahore", address: "Plot 405 Road, near Sharif Medical Complex Road, Jati Umrah, Makhdoom Colony, Lahore, 54000", map: "https://share.google/tooW5IB1mQobuSWr3", embed: "https://maps.google.com/maps?q=Afzal%20Enterprises%20Jati%20Umrah%20Lahore&z=15&output=embed", image: "1497366216548-37526070297c" },

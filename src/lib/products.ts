@@ -9,7 +9,7 @@ type Row = {
 const fallbackImage = catalog[0].image;
 
 /** Public Supabase client, or null when the env vars are missing (e.g. a build without them) so pages render empty instead of crashing. */
-function anonClient() {
+export function anonClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) { console.warn("Supabase env vars missing: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"); return null; }
   return createClient(url, key, { auth: { persistSession: false } });

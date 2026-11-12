@@ -6,10 +6,11 @@ import { ProductTabs } from "@/components/product-tabs";
 import { Testimonials } from "@/components/testimonials";
 import { SectionHeading } from "@/components/ui";
 import { getProducts } from "@/lib/products";
-import { getProduct, homeTiles, photo, productDetails, productHref, productsIn, projects, promos, sectors, site, slides, stats } from "@/lib/store";
+import { getProjects, projectCover, sized } from "@/lib/projects";
+import { getProduct, homeTiles, photo, productDetails, productHref, productsIn, promos, sectors, site, slides, stats } from "@/lib/store";
 
 export default async function Home() {
-  const products = await getProducts();
+  const [products, projects] = await Promise.all([getProducts(), getProjects()]);
   const featured = products.find((product) => product.featured) ?? getProduct(products, "black-leather-high-back-executive-chair") ?? products[0];
   const featuredInfo = featured && productDetails(featured);
   return <>
@@ -87,10 +88,10 @@ export default async function Home() {
     <section className="section" id="projects">
       <div className="container">
         <SectionHeading eyebrow="Our projects" title="Spaces we've furnished" text="From corporate floors to neighbourhood cafés — complete fit-outs, delivered on schedule." link={{ label: "View all projects", href: "/projects" }} />
-        <div className="project-grid">{projects.map((project) => <Link className="project-card" href={`/projects/${project.slug}`} key={project.slug}>
-          <span style={{ backgroundImage: `url("${photo(project.image, 900)}")` }} />
+        {projects.length > 0 && <div className="project-grid">{projects.slice(0, 4).map((project) => <Link className="project-card" href={`/projects/${project.id}`} key={project.id}>
+          <span style={{ backgroundImage: `url("${sized(projectCover(project), 900)}")` }} />
           <div><p>{project.place}</p><h3>{project.title}</h3><small>{project.scope}</small></div>
-        </Link>)}</div>
+        </Link>)}</div>}
         <div className="sectors"><span className="sectors-label"><Building2 size={18} /> Trusted across sectors</span>{sectors.map((sector) => <span key={sector}>{sector}</span>)}</div>
       </div>
     </section>
