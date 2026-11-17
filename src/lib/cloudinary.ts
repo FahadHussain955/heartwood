@@ -7,10 +7,10 @@ cloudinary.config({
   secure: true,
 });
 
-// Project photos are stored at most 1600px. Gallery photos also get the logo (Cloudinary id "watermark/afzal-logo",
-// a transparent copy of public/logo-new.png) burned in, centred and faint.
+// Project photos are stored at most 1600px. Gallery photos also get the logo (Cloudinary id "watermark/afzal-logo-home",
+// the home page logo, public/logo.svg rendered to PNG) burned in, centred and faint.
 const projectSize = { width: 1600, height: 1600, crop: "limit" };
-const logoWatermark = { overlay: "watermark:afzal-logo", width: 0.4, flags: "relative", opacity: 30, gravity: "center" };
+const logoWatermark = { overlay: "watermark:afzal-logo-home", width: 0.4, flags: "relative", opacity: 30, gravity: "center" };
 
 /** Uploads an image buffer and returns the URL to store in the database. */
 export function uploadImage(buffer: Buffer, folder = "products", { watermark = false } = {}) {
